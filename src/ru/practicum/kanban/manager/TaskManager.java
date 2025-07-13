@@ -1,27 +1,37 @@
+package ru.practicum.kanban.manager;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TaskManager {
-	private final Map<Integer, Task> tasks;
-	private final Map<Integer, Epic> epics;
-	private final Map<Integer, Subtask> subtasks;
-	private int nextId;
+import ru.practicum.kanban.model.Epic;
+import ru.practicum.kanban.model.Subtask;
+import ru.practicum.kanban.model.Task;
+import ru.practicum.kanban.model.TaskStatus;
 
-	public TaskManager() {
-		tasks = new HashMap<>();
-		epics = new HashMap<>();
-		subtasks = new HashMap<>();
-		nextId = 1;
+public class TaskManager {
+	private final Map<Integer, Task> tasks = new HashMap<>();
+	private final Map<Integer, Epic> epics = new HashMap<>();
+	private final Map<Integer, Subtask> subtasks = new HashMap<>();
+	private int nextId = 1;
+
+	private int generateNextId() {
+		if (nextId == Integer.MAX_VALUE) {
+			throw new IllegalStateException("Достигнут максимальный ID");
+		}
+		return nextId++;
 	}
 
 	// Методы для обычных задач
-	public Task createTask(String name, String description) {
+	public int createTask(String name, String description) {
+		if (name == null || name.trim().isEmpty()) {
+			throw new IllegalArgumentException("Название задачи не может быть пустым");
+		}
 		Task task = new Task(name, description);
-		task.setId(nextId++);
+		task.setId(generateNextId());
 		tasks.put(task.getId(), task);
-		return task;
+		return task.getId();
 	}
 
 	public List<Task> getAllTasks() {
@@ -33,7 +43,12 @@ public class TaskManager {
 	}
 
 	public void updateTask(Task task) {
-		tasks.put(task.getId(), task);
+		if (task == null) {
+			throw new IllegalArgumentException("Задача не может быть пустой");
+		}
+		if (tasks.containsKey(task.getId())) {
+			tasks.put(task.getId(), task);
+		}
 	}
 
 	public void deleteTask(int id) {
@@ -45,11 +60,14 @@ public class TaskManager {
 	}
 
 	// Методы для эпиков
-	public Epic createEpic(String name, String description) {
+	public int createEpic(String name, String description) {
+		if (name == null || name.trim().isEmpty() || description == null) {
+			throw new IllegalArgumentException("Название и описание эпика не могут быть пустыми");
+		}
 		Epic epic = new Epic(name, description);
-		epic.setId(nextId++);
+		epic.setId(generateNextId());
 		epics.put(epic.getId(), epic);
-		return epic;
+		return epic.getId();
 	}
 
 	public List<Epic> getAllEpics() {
@@ -61,15 +79,13 @@ public class TaskManager {
 	}
 
 	public void updateEpic(Epic epic) {
-		Epic savedEpic = epics.get(epic.getId());
-		if (savedEpic != null) {
-			// Сохраняем список подзадач из старого эпика
-			epic.setSubtaskIds(savedEpic.getSubtaskIds());
-			// ИГНОРИРУЕМ статус от пользователя - эпик не управляет своим статусом
-			// Полная замена объекта
-			epics.put(epic.getId(), epic);
-			// Пересчитываем статус на основе подзадач (перезаписываем пользовательский)
-			updateEpicStatus(epic);
+		if (epic == null) {
+			throw new IllegalArgumentException("Эпик не может быть пустым");
+		}
+		if (epics.containsKey(epic.getId())) {
+			Epic savedEpic = epics.get(epic.getId());
+			savedEpic.setName(epic.getName());
+			savedEpic.setDescription(epic.getDescription());
 		}
 	}
 
@@ -90,18 +106,20 @@ public class TaskManager {
 	}
 
 	// Методы для подзадач
-	public Subtask createSubtask(String name, String description, int epicId) {
+	public void createSubtask(String name, String description, int epicId) {
+		if (name == null || name.trim().isEmpty()) {
+			throw new IllegalArgumentException("Название подзадачи не может быть пустым");
+		}
 		Epic epic = epics.get(epicId);
 		if (epic == null) {
-			return null;
+			throw new IllegalArgumentException("Эпик с ID " + epicId + " не найден");
 		}
 
 		Subtask subtask = new Subtask(name, description, epicId);
-		subtask.setId(nextId++);
+		subtask.setId(generateNextId());
 		subtasks.put(subtask.getId(), subtask);
 		epic.addSubtaskId(subtask.getId());
 		updateEpicStatus(epic);
-		return subtask;
 	}
 
 	public List<Subtask> getAllSubtasks() {
@@ -113,10 +131,15 @@ public class TaskManager {
 	}
 
 	public void updateSubtask(Subtask subtask) {
-		subtasks.put(subtask.getId(), subtask);
-		Epic epic = epics.get(subtask.getEpicId());
-		if (epic != null) {
-			updateEpicStatus(epic);
+		if (subtask == null) {
+			throw new IllegalArgumentException("Подзадача не может быть пустой");
+		}
+		if (subtasks.containsKey(subtask.getId())) {
+			Epic epic = epics.get(subtask.getEpicId());
+			if (epic != null) {
+				subtasks.put(subtask.getId(), subtask);
+				updateEpicStatus(epic);
+			}
 		}
 	}
 

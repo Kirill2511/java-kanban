@@ -1,3 +1,5 @@
+package ru.practicum.kanban.model;
+
 import java.util.Objects;
 
 public class Task {
@@ -7,12 +9,27 @@ public class Task {
 	protected TaskStatus status;
 
 	public Task(String name, String description) {
+		if (name == null || name.trim().isEmpty()) {
+			throw new IllegalArgumentException("Название задачи не может быть пустым");
+		}
+		if (description == null) {
+			throw new IllegalArgumentException("Описание задачи не может быть пустым");
+		}
 		this.name = name;
 		this.description = description;
 		this.status = TaskStatus.NEW;
 	}
 
 	public Task(int id, String name, String description, TaskStatus status) {
+		if (name == null || name.trim().isEmpty()) {
+			throw new IllegalArgumentException("Название задачи не может быть пустым");
+		}
+		if (description == null) {
+			throw new IllegalArgumentException("Описание задачи не может быть пустым");
+		}
+		if (status == null) {
+			throw new IllegalArgumentException("Статус задачи не может быть пустым");
+		}
 		this.id = id;
 		this.name = name;
 		this.description = description;
@@ -32,6 +49,9 @@ public class Task {
 	}
 
 	public void setName(String name) {
+		if (name == null || name.trim().isEmpty()) {
+			throw new IllegalArgumentException("Название задачи не может быть пустым");
+		}
 		this.name = name;
 	}
 
@@ -40,6 +60,9 @@ public class Task {
 	}
 
 	public void setDescription(String description) {
+		if (description == null) {
+			throw new IllegalArgumentException("Описание задачи не может быть пустым");
+		}
 		this.description = description;
 	}
 
@@ -48,6 +71,9 @@ public class Task {
 	}
 
 	public void setStatus(TaskStatus status) {
+		if (status == null) {
+			throw new IllegalArgumentException("Статус задачи не может быть пустым");
+		}
 		this.status = status;
 	}
 
