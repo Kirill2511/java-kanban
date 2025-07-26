@@ -31,7 +31,12 @@ public class InMemoryTaskManager implements TaskManager {
             throw new IllegalArgumentException("Название задачи не может быть пустым");
         }
         Task task = new Task(name, description);
-        task.setId(generateNextId());
+        int taskId = generateNextId();
+        // Проверяем, что ID уникален среди всех задач
+        while (tasks.containsKey(taskId) || epics.containsKey(taskId) || subtasks.containsKey(taskId)) {
+            taskId = generateNextId();
+        }
+        task.setId(taskId);
         tasks.put(task.getId(), task);
         return task.getId();
     }
@@ -82,7 +87,12 @@ public class InMemoryTaskManager implements TaskManager {
             throw new IllegalArgumentException("Название и описание эпика не могут быть пустыми");
         }
         Epic epic = new Epic(name, description);
-        epic.setId(generateNextId());
+        int epicId = generateNextId();
+        // Проверяем, что ID уникален среди всех задач
+        while (tasks.containsKey(epicId) || epics.containsKey(epicId) || subtasks.containsKey(epicId)) {
+            epicId = generateNextId();
+        }
+        epic.setId(epicId);
         epics.put(epic.getId(), epic);
         return epic.getId();
     }
@@ -149,9 +159,9 @@ public class InMemoryTaskManager implements TaskManager {
 
         Subtask subtask = new Subtask(name, description, epicId);
         int subtaskId = generateNextId();
-        // Дополнительная проверка на случай переполнения ID или других проблем
-        if (subtaskId == epicId) {
-            subtaskId = generateNextId(); // Получаем следующий ID
+        // Проверяем, что ID уникален среди всех задач
+        while (tasks.containsKey(subtaskId) || epics.containsKey(subtaskId) || subtasks.containsKey(subtaskId)) {
+            subtaskId = generateNextId();
         }
         subtask.setId(subtaskId);
         subtasks.put(subtask.getId(), subtask);
@@ -210,6 +220,7 @@ public class InMemoryTaskManager implements TaskManager {
         subtasks.clear();
         for (Epic epic : epics.values()) {
             epic.getSubtaskIds().forEach(subtasks::remove);
+            epic.getSubtaskIds().clear();
             updateEpicStatus(epic);
         }
     }
