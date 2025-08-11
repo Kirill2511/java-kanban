@@ -17,13 +17,6 @@ public class InMemoryTaskManager implements TaskManager {
     private final HistoryManager historyManager = Managers.getDefaultHistory();
     private int nextId = 1;
 
-    private int generateNextId() {
-        if (nextId == Integer.MAX_VALUE) {
-            throw new IllegalStateException("Достигнут максимальный ID");
-        }
-        return nextId++;
-    }
-
     // Методы для обычных задач
     @Override
     public int createTask(String name, String description) {
@@ -39,6 +32,13 @@ public class InMemoryTaskManager implements TaskManager {
         task.setId(taskId);
         tasks.put(task.getId(), task);
         return task.getId();
+    }
+
+    private int generateNextId() {
+        if (nextId == Integer.MAX_VALUE) {
+            throw new IllegalStateException("Достигнут максимальный ID");
+        }
+        return nextId++;
     }
 
     @Override
@@ -73,10 +73,14 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteTask(int id) {
         tasks.remove(id);
+        historyManager.remove(id);
     }
 
     @Override
     public void deleteAllTasks() {
+        for (int taskId : tasks.keySet()) {
+            historyManager.remove(taskId);
+        }
         tasks.clear();
     }
 
@@ -135,13 +139,21 @@ public class InMemoryTaskManager implements TaskManager {
             // Удаляем все подзадачи эпика
             for (int subtaskId : epic.getSubtaskIds()) {
                 subtasks.remove(subtaskId);
+                historyManager.remove(subtaskId);
             }
             epics.remove(id);
+            historyManager.remove(id);
         }
     }
 
     @Override
     public void deleteAllEpics() {
+        for (int epicId : epics.keySet()) {
+            historyManager.remove(epicId);
+        }
+        for (int subtaskId : subtasks.keySet()) {
+            historyManager.remove(subtaskId);
+        }
         epics.clear();
         subtasks.clear();
     }
@@ -212,11 +224,15 @@ public class InMemoryTaskManager implements TaskManager {
                 updateEpicStatus(epic);
             }
             subtasks.remove(id);
+            historyManager.remove(id);
         }
     }
 
     @Override
     public void deleteAllSubtasks() {
+        for (int subtaskId : subtasks.keySet()) {
+            historyManager.remove(subtaskId);
+        }
         subtasks.clear();
         for (Epic epic : epics.values()) {
             epic.clearSubtaskIds();
@@ -240,6 +256,12 @@ public class InMemoryTaskManager implements TaskManager {
             }
         }
         return epicSubtasks;
+    }
+
+    // История просмотров задач
+    @Override
+    public List<Task> getHistory() {
+        return historyManager.getHistory();
     }
 
     // Обновление статуса эпика на основе подзадач
@@ -270,11 +292,5 @@ public class InMemoryTaskManager implements TaskManager {
         } else {
             epic.setStatus(TaskStatus.NEW);
         }
-    }
-
-    // История просмотров задач
-    @Override
-    public List<Task> getHistory() {
-        return historyManager.getHistory();
     }
 }
