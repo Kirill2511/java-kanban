@@ -1,4 +1,4 @@
-package test.ru.practicum.kanban.manager;
+package manager;
 
 import main.ru.practicum.kanban.manager.InMemoryTaskManager;
 import main.ru.practicum.kanban.manager.TaskManager;
@@ -13,7 +13,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class InMemoryTaskManagerTest {
+public class InMemoryTaskManagerTest {
 
     private TaskManager taskManager;
 

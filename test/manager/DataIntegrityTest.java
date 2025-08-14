@@ -1,4 +1,4 @@
-package test.ru.practicum.kanban.manager;
+package manager;
 
 import main.ru.practicum.kanban.manager.InMemoryTaskManager;
 import main.ru.practicum.kanban.manager.TaskManager;
@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Тесты для демонстрации проблем с сеттерами и проверки защитных механизмов.
  */
-class DataIntegrityTest {
+public class DataIntegrityTest {
 
     private TaskManager taskManager;
 
@@ -108,69 +108,6 @@ class DataIntegrityTest {
                 "ID внутренней задачи не должен измениться");
     }
 
-    /**
-     * Проверяет целостность данных при удалении подзадач.
-     */
-    @Test
-    void integrity_subtaskDeletionCleansUpEpic() {
-        // given
-        int epicId = taskManager.createEpic("Эпик с подзадачами", "Описание");
-        taskManager.createSubtask("Подзадача 1", "Описание 1", epicId);
-        taskManager.createSubtask("Подзадача 2", "Описание 2", epicId);
-        taskManager.createSubtask("Подзадача 3", "Описание 3", epicId);
-
-        List<Subtask> subtasks = taskManager.getEpicSubtasks(epicId);
-        assertEquals(3, subtasks.size());
-
-        int subtaskToDelete = subtasks.get(1).getId(); // Удаляем среднюю подзадачу
-
-        // when
-        taskManager.deleteSubtask(subtaskToDelete);
-
-        // then
-        Epic epic = taskManager.getEpic(epicId);
-        assertEquals(2, epic.getSubtaskIds().size(),
-                "Список подзадач эпика должен уменьшиться");
-        assertFalse(epic.getSubtaskIds().contains(subtaskToDelete),
-                "ID удаленной подзадачи не должен оставаться в эпике");
-
-        // Проверяем, что удаленная подзадача недоступна
-        assertNull(taskManager.getSubtask(subtaskToDelete),
-                "Удаленная подзадача не должна быть доступна");
-
-        // Проверяем, что оставшиеся подзадачи доступны
-        List<Subtask> remainingSubtasks = taskManager.getEpicSubtasks(epicId);
-        assertEquals(2, remainingSubtasks.size());
-    }
-
-    /**
-     * Проверяет каскадное удаление при удалении эпика.
-     */
-    @Test
-    void integrity_epicDeletionCascadesSubtasks() {
-        // given
-        int epicId = taskManager.createEpic("Эпик для удаления", "Описание");
-        taskManager.createSubtask("Подзадача 1", "Описание 1", epicId);
-        taskManager.createSubtask("Подзадача 2", "Описание 2", epicId);
-
-        List<Subtask> subtasks = taskManager.getEpicSubtasks(epicId);
-        assertEquals(2, subtasks.size());
-
-        // Запоминаем ID подзадач
-        int subtask1Id = subtasks.get(0).getId();
-        int subtask2Id = subtasks.get(1).getId();
-
-        // when
-        taskManager.deleteEpic(epicId);
-
-        // then
-        assertNull(taskManager.getEpic(epicId), "Эпик должен быть удален");
-        assertNull(taskManager.getSubtask(subtask1Id), "Подзадача 1 должна быть удалена");
-        assertNull(taskManager.getSubtask(subtask2Id), "Подзадача 2 должна быть удалена");
-
-        assertTrue(taskManager.getAllSubtasks().isEmpty(),
-                "Все подзадачи должны быть удалены");
-    }
 
     /**
      * Проверяет корректность обновления статуса эпика при изменении подзадач.

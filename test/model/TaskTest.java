@@ -1,4 +1,4 @@
-package test.ru.practicum.kanban.model;
+package model;
 
 import main.ru.practicum.kanban.model.Epic;
 import main.ru.practicum.kanban.model.Subtask;
@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class TaskTest {
+public class TaskTest {
 
     /**
      * Проверяет, что конструктор задачи корректно инициализирует все поля.

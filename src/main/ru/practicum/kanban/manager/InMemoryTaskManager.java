@@ -35,7 +35,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private int generateNextId() {
-        if (nextId == Integer.MAX_VALUE) {
+        if (nextId >= Integer.MAX_VALUE) {
             throw new IllegalStateException("Достигнут максимальный ID");
         }
         return nextId++;

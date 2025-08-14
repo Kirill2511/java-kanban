@@ -1,4 +1,4 @@
-package test.ru.practicum.kanban.model;
+package model;
 
 import main.ru.practicum.kanban.model.Epic;
 import main.ru.practicum.kanban.model.Subtask;
@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class EpicBusinessLogicTest {
+public class EpicBusinessLogicTest {
 
     /**
      * Проверяет, что эпик не может быть добавлен как собственная подзадача.

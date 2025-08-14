@@ -1,4 +1,4 @@
-package test.ru.practicum.kanban.model;
+package model;
 
 import main.ru.practicum.kanban.model.Subtask;
 import main.ru.practicum.kanban.model.TaskStatus;
@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class SubtaskTest {
+public class SubtaskTest {
 
     /**
      * Проверяет, что конструктор подзадачи корректно инициализирует все поля.

@@ -1,4 +1,4 @@
-package test.ru.practicum.kanban.manager;
+package manager;
 
 import main.ru.practicum.kanban.manager.HistoryManager;
 import main.ru.practicum.kanban.manager.InMemoryHistoryManager;
@@ -13,7 +13,11 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class HistoryRemoveTest {
+/**
+ * Интеграционные тесты для удаления из истории при операциях с TaskManager.
+ * Объединяет тесты удаления задач из истории и интеграции с TaskManager.
+ */
+public class HistoryRemoveTest {
 
     private HistoryManager historyManager;
     private TaskManager taskManager;
@@ -25,7 +29,7 @@ class HistoryRemoveTest {
     }
 
     /**
-     * Тестирует метод HistoryManager.remove()
+     * Проверяет прямое удаление задач из HistoryManager.
      */
     @Test
     void testHistoryManagerRemove() {

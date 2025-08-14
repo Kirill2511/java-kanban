@@ -1,4 +1,4 @@
-package test.ru.practicum.kanban.model;
+package model;
 
 import main.ru.practicum.kanban.model.Epic;
 import main.ru.practicum.kanban.model.TaskStatus;
@@ -8,7 +8,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class EpicTest {
+public class EpicTest {
 
     /**
      * Проверяет, что конструктор создаёт эпик с пустым списком подзадач.

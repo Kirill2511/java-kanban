@@ -1,11 +1,11 @@
-package test.ru.practicum.kanban.manager;
+package manager;
 
 import main.ru.practicum.kanban.manager.*;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ManagersTest {
+public class ManagersTest {
 
     /**
      * Проверяет, что Managers.getDefault() возвращает экземпляр
