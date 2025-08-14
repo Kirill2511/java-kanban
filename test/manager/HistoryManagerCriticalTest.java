@@ -1,4 +1,4 @@
-package test.ru.practicum.kanban.manager;
+package manager;
 
 import main.ru.practicum.kanban.manager.HistoryManager;
 import main.ru.practicum.kanban.manager.InMemoryHistoryManager;
@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class HistoryManagerCriticalTest {
+public class HistoryManagerCriticalTest {
 
     private HistoryManager historyManager;
 

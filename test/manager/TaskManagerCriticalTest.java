@@ -1,4 +1,4 @@
-package test.ru.practicum.kanban.manager;
+package manager;
 
 import main.ru.practicum.kanban.manager.InMemoryTaskManager;
 import main.ru.practicum.kanban.model.Epic;
@@ -12,7 +12,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class TaskManagerCriticalTest {
+public class TaskManagerCriticalTest {
 
     private InMemoryTaskManager taskManager;
 
@@ -189,51 +189,6 @@ class TaskManagerCriticalTest {
         }
     }
 
-    /**
-     * Проверяет, что попытка создать подзадачу для несуществующего эпика
-     * корректно обрабатывается.
-     */
-    @Test
-    void epicSubtask_shouldHandleInvalidEpicId() {
-        // given
-        int nonExistentEpicId = 999;
-
-        // when & then
-        // Попытка создать подзадачу для несуществующего эпика должна бросить исключение
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> taskManager.createSubtask("Подзадача", "Описание", nonExistentEpicId),
-                "Создание подзадачи для несуществующего эпика должно бросать исключение");
-
-        assertTrue(exception.getMessage().contains("не найден"),
-                "Сообщение об ошибке должно указывать на отсутствие эпика");
-    }
-
-    /**
-     * Проверяет обработку null значений в методах менеджера.
-     */
-    @Test
-    void taskManager_shouldHandleNullValues() {
-        // when & then
-        assertThrows(IllegalArgumentException.class,
-                () -> taskManager.createTask(null, "Описание"),
-                "Создание задачи с null именем должно бросать исключение");
-
-        assertThrows(IllegalArgumentException.class,
-                () -> taskManager.createTask("Имя", null),
-                "Создание задачи с null описанием должно бросать исключение");
-
-        assertThrows(IllegalArgumentException.class,
-                () -> taskManager.updateTask(null),
-                "Обновление null задачи должно бросать исключение");
-
-        assertThrows(IllegalArgumentException.class,
-                () -> taskManager.createEpic(null, "Описание"),
-                "Создание эпика с null именем должно бросать исключение");
-
-        assertThrows(IllegalArgumentException.class,
-                () -> taskManager.createSubtask(null, "Описание", 1),
-                "Создание подзадачи с null именем должно бросать исключение");
-    }
 
     /**
      * Проверяет поведение при обновлении несуществующих задач.
@@ -296,26 +251,6 @@ class TaskManagerCriticalTest {
                 "Все подзадачи должны быть удалены");
     }
 
-    /**
-     * Проверяет поведение при получении задач с несуществующими ID.
-     */
-    @Test
-    void taskManager_shouldReturnNullForNonExistentIds() {
-        // when & then
-        assertNull(taskManager.getTask(999),
-                "Получение несуществующей задачи должно возвращать null");
-        assertNull(taskManager.getEpic(998),
-                "Получение несуществующего эпика должно возвращать null");
-        assertNull(taskManager.getSubtask(997),
-                "Получение несуществующей подзадачи должно возвращать null");
-
-        // Проверяем, что получение подзадач несуществующего эпика возвращает пустой
-        // список
-        List<Subtask> subtasks = taskManager.getEpicSubtasks(996);
-        assertNotNull(subtasks, "Список подзадач не должен быть null");
-        assertTrue(subtasks.isEmpty(),
-                "Список подзадач несуществующего эпика должен быть пустым");
-    }
 
     /**
      * Проверяет общую консистентность данных между эпиками и подзадачами

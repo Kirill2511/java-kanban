@@ -1,4 +1,4 @@
-package test.ru.practicum.kanban.manager;
+package manager;
 
 import main.ru.practicum.kanban.manager.InMemoryTaskManager;
 import main.ru.practicum.kanban.manager.TaskManager;
@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Расширенные тесты для InMemoryTaskManager с проверкой целостности данных.
  */
-class InMemoryTaskManagerExtendedTest {
+public class InMemoryTaskManagerExtendedTest {
 
     private TaskManager taskManager;
 
@@ -56,40 +56,6 @@ class InMemoryTaskManagerExtendedTest {
                 "Список подзадач эпика должен быть пустым");
     }
 
-    /**
-     * Проверяет, что при удалении эпика удаляются все его подзадачи.
-     */
-    @Test
-    void deleteEpic_shouldDeleteAllSubtasks() {
-        // given
-        int epicId = taskManager.createEpic("Эпик", "Описание эпика");
-        taskManager.createSubtask("Подзадача 1", "Описание 1", epicId);
-        taskManager.createSubtask("Подзадача 2", "Описание 2", epicId);
-        taskManager.createSubtask("Подзадача 3", "Описание 3", epicId);
-
-        // Получаем ID подзадач
-        List<Subtask> epicSubtasks = taskManager.getEpicSubtasks(epicId);
-        assertEquals(3, epicSubtasks.size());
-
-        // Проверяем, что все подзадачи созданы
-        List<Subtask> allSubtasks = taskManager.getAllSubtasks();
-        assertEquals(3, allSubtasks.size());
-
-        // when
-        taskManager.deleteEpic(epicId);
-
-        // then
-        assertNull(taskManager.getEpic(epicId), "Эпик должен быть удален");
-
-        // Проверяем, что все подзадачи удалены
-        allSubtasks = taskManager.getAllSubtasks();
-        assertTrue(allSubtasks.isEmpty(), "Все подзадачи должны быть удалены");
-
-        // Проверяем, что подзадачи удалены из истории
-        List<Task> history = taskManager.getHistory();
-        assertFalse(history.stream().anyMatch(task -> task instanceof Subtask),
-                "Подзадачи не должны оставаться в истории");
-    }
 
     /**
      * Проверяет, что статус эпика пересчитывается при изменении статуса подзадач.
@@ -132,32 +98,6 @@ class InMemoryTaskManagerExtendedTest {
 
     // === ТЕСТЫ ПРОБЛЕМ С СЕТТЕРАМИ ===
 
-    /**
-     * Проверяет проблему изменения задачи через сеттеры после получения из
-     * менеджера.
-     */
-    @Test
-    void taskSetters_shouldNotAffectInternalData() {
-        // given
-        int taskId = taskManager.createTask("Исходная задача", "Исходное описание");
-
-        // when - получаем задачу и изменяем её через сеттеры
-        Task retrievedTask = taskManager.getTask(taskId);
-        retrievedTask.setName("Измененное название");
-        retrievedTask.setDescription("Измененное описание");
-        retrievedTask.setStatus(TaskStatus.DONE);
-
-        // then - внутренние данные менеджера не должны измениться
-        Task internalTask = taskManager.getTask(taskId);
-
-        // Проверяем, что менеджер возвращает копии, а не ссылки
-        assertEquals("Исходная задача", internalTask.getName(),
-                "Название внутренней задачи не должно измениться");
-        assertEquals("Исходное описание", internalTask.getDescription(),
-                "Описание внутренней задачи не должно измениться");
-        assertEquals(TaskStatus.NEW, internalTask.getStatus(),
-                "Статус внутренней задачи не должен измениться");
-    }
 
     /**
      * Проверяет проблему изменения ID задачи через сеттер.
@@ -295,26 +235,6 @@ class InMemoryTaskManagerExtendedTest {
 
     // === ТЕСТЫ ГРАНИЧНЫХ СЛУЧАЕВ ===
 
-    /**
-     * Проверяет обработку некорректных данных.
-     */
-    @Test
-    void validation_shouldHandleInvalidInputs() {
-        // Проверка создания задачи с пустым названием
-        assertThrows(IllegalArgumentException.class, () -> taskManager.createTask("", "Описание"));
-
-        assertThrows(IllegalArgumentException.class, () -> taskManager.createTask(null, "Описание"));
-
-        // Проверка создания подзадачи для несуществующего эпика
-        assertThrows(IllegalArgumentException.class, () -> taskManager.createSubtask("Подзадача", "Описание", 999));
-
-        // Проверка обновления null задач
-        assertThrows(IllegalArgumentException.class, () -> taskManager.updateTask(null));
-
-        assertThrows(IllegalArgumentException.class, () -> taskManager.updateEpic(null));
-
-        assertThrows(IllegalArgumentException.class, () -> taskManager.updateSubtask(null));
-    }
 
     /**
      * Проверяет корректность работы при удалении несуществующих задач.

@@ -1,4 +1,4 @@
-package test.ru.practicum.kanban.manager;
+package manager;
 
 import main.ru.practicum.kanban.manager.HistoryManager;
 import main.ru.practicum.kanban.manager.Managers;
@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ManagersCriticalTest {
+public class ManagersCriticalTest {
 
     /**
      * Проверяет, что Managers.getDefault() всегда возвращает инициализированный
