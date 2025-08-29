@@ -15,7 +15,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     private final File file;
 
     public FileBackedTaskManager(File file) {
-        super();
         this.file = file;
     }
 
