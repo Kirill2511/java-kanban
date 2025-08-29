@@ -1,17 +1,29 @@
 package main.ru.practicum.kanban;
 
+import main.ru.practicum.kanban.manager.FileBackedTaskManager;
 import main.ru.practicum.kanban.manager.Managers;
 import main.ru.practicum.kanban.manager.TaskManager;
 import main.ru.practicum.kanban.model.Epic;
 import main.ru.practicum.kanban.model.Subtask;
 import main.ru.practicum.kanban.model.Task;
 
+import java.io.File;
 import java.util.List;
 
 public class Main {
 
     public static void main(String[] args) {
         System.out.println("Поехали!");
+
+        // Демонстрация обычного менеджера в памяти
+        demonstrateInMemoryTaskManager();
+
+        // Демонстрация файлового менеджера
+        demonstrateFileBackedTaskManager();
+    }
+
+    private static void demonstrateInMemoryTaskManager() {
+        System.out.println("\n========== ДЕМОНСТРАЦИЯ InMemoryTaskManager ==========\n");
 
         // Получаем менеджер задач через утилитарный класс
         TaskManager taskManager = Managers.getDefault();
@@ -140,7 +152,58 @@ public class Main {
         System.out.println("=== ИТОГОВОЕ СОСТОЯНИЕ ===");
         printAllTasks(taskManager);
 
-        System.out.println("Тестирование завершено!");
+        System.out.println("Тестирование InMemoryTaskManager завершено!");
+    }
+
+    private static void demonstrateFileBackedTaskManager() {
+        System.out.println("\n========== ДЕМОНСТРАЦИЯ FileBackedTaskManager ==========\n");
+
+        File file = new File("kanban_save.csv");
+
+        // Создаем файловый менеджер задач
+        FileBackedTaskManager fileManager = (FileBackedTaskManager) Managers.getFileBackedTaskManager(file);
+        System.out.println("Создан файловый менеджер задач: " + fileManager.getClass().getSimpleName());
+        System.out.println("Файл для сохранения: " + file.getAbsolutePath());
+        System.out.println();
+
+        // Создаем задачи
+        System.out.println("=== СОЗДАНИЕ ЗАДАЧ С АВТОСОХРАНЕНИЕМ ===");
+        int taskId = fileManager.createTask("Изучить FileBackedTaskManager", "Понять как работает автосохранение");
+        int epicId = fileManager.createEpic("Изучение Java", "Эпик для изучения языка программирования Java");
+        fileManager.createSubtask("Изучить синтаксис", "Основы синтаксиса Java", epicId);
+        fileManager.createSubtask("Изучить ООП", "Объектно-ориентированное программирование в Java", epicId);
+
+        System.out.println("Созданы задачи с автосохранением в файл");
+        System.out.println("Состояние менеджера:");
+        printAllTasks(fileManager);
+
+        // Создаем новый менеджер и загружаем данные из файла
+        System.out.println("=== ЗАГРУЗКА ДАННЫХ ИЗ ФАЙЛА ===");
+        FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(file);
+        System.out.println("Создан новый менеджер и загружены данные из файла");
+        System.out.println("Состояние загруженного менеджера:");
+        printAllTasks(loadedManager);
+
+        // Проверяем, что данные загрузились корректно
+        Task loadedTask = loadedManager.getTask(taskId);
+        Epic loadedEpic = loadedManager.getEpic(epicId);
+
+        if (loadedTask != null && loadedEpic != null) {
+            System.out.println("✓ Данные загрузились корректно!");
+            System.out.println("✓ Задача: " + loadedTask.getName());
+            System.out.println("✓ Эпик: " + loadedEpic.getName());
+            System.out.println("✓ Подзадач в эпике: " + loadedManager.getEpicSubtasks(epicId).size());
+        } else {
+            System.out.println("✗ Ошибка при загрузке данных!");
+        }
+
+        // Удаляем тестовый файл
+        if (file.exists()) {
+            file.delete();
+            System.out.println("\nТестовый файл удален");
+        }
+
+        System.out.println("Тестирование FileBackedTaskManager завершено!");
     }
 
     private static void printAllTasks(TaskManager manager) {
