@@ -76,8 +76,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             for (String stringId : stringIds) {
                 try {
                     ids.add(Integer.parseInt(stringId.trim()));
-                } catch (NumberFormatException ignored) {
-
+                } catch (NumberFormatException e) {
+                    // Log and skip malformed ID
+                    System.err.println("Warning: Skipping malformed history ID: '" + stringId.trim() + "'");
                 }
             }
         }
@@ -342,9 +343,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             return "";
         }
 
-        // Если строка содержит запятые, кавычки или переводы строк, оборачиваем в
-        // кавычки
-        if (value.contains(",") || value.contains("\"") || value.contains("\n")) {
+        // Если строка содержит запятые, кавычки, переводы строк или возвраты каретки,
+        // оборачиваем в кавычки
+        if (value.contains(",") || value.contains("\"") || value.contains("\n") || value.contains("\r")) {
             // Экранируем кавычки удвоением
             String escaped = value.replace("\"", "\"\"");
             return "\"" + escaped + "\"";

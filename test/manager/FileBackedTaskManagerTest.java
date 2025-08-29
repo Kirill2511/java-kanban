@@ -198,10 +198,8 @@ class FileBackedTaskManagerTest {
         // Создаем новый временный файл и загружаем данные
         File newTempFile = Files.createTempFile("test_load_complex", ".csv").toFile();
         try {
-            FileBackedTaskManager newManager;
-
             // Копируем данные
-            newManager = FileBackedTaskManager.loadFromFile(tempFile);
+            FileBackedTaskManager newManager = FileBackedTaskManager.loadFromFile(tempFile);
 
             // Проверяем количество задач
             assertEquals(1, newManager.getAllTasks().size());
