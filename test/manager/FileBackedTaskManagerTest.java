@@ -16,7 +16,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FileBackedTaskManagerTest {
+class FileBackedTaskManagerTest {
 
     private File tempFile;
     private FileBackedTaskManager manager;
