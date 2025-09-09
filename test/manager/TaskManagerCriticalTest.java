@@ -33,7 +33,7 @@ public class TaskManagerCriticalTest {
 
         // получаем ID подзадачи из эпика
         var subtasks = taskManager.getEpicSubtasks(epicId);
-        int subtaskId = subtasks.get(0).getId();
+        int subtaskId = subtasks.getFirst().getId();
 
         // when
         var retrievedTaskOpt = taskManager.getTask(taskId);
@@ -304,7 +304,7 @@ public class TaskManagerCriticalTest {
         }
 
         // when - удаляем одну подзадачу
-        int firstSubtaskId = subtasks.get(0).getId();
+        int firstSubtaskId = subtasks.getFirst().getId();
         taskManager.deleteSubtask(firstSubtaskId);
 
         // then - проверяем обновление связей
