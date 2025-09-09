@@ -1,5 +1,7 @@
 package main.ru.practicum.kanban.model;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Task {
@@ -7,6 +9,8 @@ public class Task {
     protected String name;
     protected String description;
     protected TaskStatus status;
+    protected Duration duration;
+    protected LocalDateTime startTime;
 
     public Task(String name, String description) {
         if (name == null || name.trim().isEmpty()) {
@@ -18,6 +22,22 @@ public class Task {
         this.name = name;
         this.description = description;
         this.status = TaskStatus.NEW;
+        this.duration = Duration.ofMinutes(0);
+        this.startTime = null;
+    }
+
+    public Task(String name, String description, Duration duration, LocalDateTime startTime) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Название задачи не может быть пустым");
+        }
+        if (description == null) {
+            throw new IllegalArgumentException("Описание задачи не может быть пустым");
+        }
+        this.name = name;
+        this.description = description;
+        this.status = TaskStatus.NEW;
+        this.duration = duration != null ? duration : Duration.ofMinutes(0);
+        this.startTime = startTime;
     }
 
     public Task(int id, String name, String description, TaskStatus status) {
@@ -34,6 +54,27 @@ public class Task {
         this.name = name;
         this.description = description;
         this.status = status;
+        this.duration = Duration.ofMinutes(0);
+        this.startTime = null;
+    }
+
+    public Task(int id, String name, String description, TaskStatus status, Duration duration,
+            LocalDateTime startTime) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Название задачи не может быть пустым");
+        }
+        if (description == null) {
+            throw new IllegalArgumentException("Описание задачи не может быть пустым");
+        }
+        if (status == null) {
+            throw new IllegalArgumentException("Статус задачи не может быть пустым");
+        }
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.status = status;
+        this.duration = duration != null ? duration : Duration.ofMinutes(0);
+        this.startTime = startTime;
     }
 
     // Конструктор копирования
@@ -42,6 +83,8 @@ public class Task {
         this.name = other.name;
         this.description = other.description;
         this.status = other.status;
+        this.duration = other.duration;
+        this.startTime = other.startTime;
     }
 
     public int getId() {
@@ -85,6 +128,29 @@ public class Task {
         this.status = status;
     }
 
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration != null ? duration : Duration.ofMinutes(0);
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        if (startTime == null || duration == null) {
+            return null;
+        }
+        return startTime.plus(duration);
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(id);
@@ -106,6 +172,8 @@ public class Task {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + status +
+                ", duration=" + duration +
+                ", startTime=" + startTime +
                 '}';
     }
 }
