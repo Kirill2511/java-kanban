@@ -93,7 +93,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return ids;
     }
 
-    // Convert CSV string to task
+    // Преобразование строки CSV в задачу
     private static Task fromString(String value) {
         String[] fields = parseCsvLine(value);
         if (fields.length < 5) {
@@ -111,30 +111,30 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             LocalDateTime startTime = null;
             String epicIdStr = "";
 
-            // Process additional fields based on CSV format: epic,duration,startTime
+            // Обработайте дополнительные поля в формате CSV: epic,duration,startTime
             if (fields.length >= 6) {
                 if (type == TaskType.SUBTASK && !fields[5].trim().isEmpty()) {
                     epicIdStr = fields[5];
                 }
-                // For Task and Epic field[5] is empty (epic column)
+                // Для Task и Epic field[5] пусто (столбец эпопеи)
             }
 
             if (fields.length >= 7 && !fields[6].trim().isEmpty()) {
-                // For all types: duration in field[6]
+                // Для всех типов: duration в field[6]
                 try {
                     long minutes = Long.parseLong(fields[6]);
                     duration = Duration.ofMinutes(minutes);
                 } catch (NumberFormatException e) {
-                    // Ignore invalid value
+                    // Игнорировать недопустимое значение
                 }
             }
 
             if (fields.length >= 8 && !fields[7].trim().isEmpty()) {
-                // For all types: startTime in field[7]
+                // Для всех типов: startTime в field[7]
                 try {
                     startTime = LocalDateTime.parse(fields[7], DATE_TIME_FORMATTER);
                 } catch (Exception e) {
-                    // Ignore invalid value
+                    // Игнорировать недопустимое значение
                 }
             }
 
@@ -193,12 +193,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private Task getTaskById(int id) {
         Task task = super.tasks.get(id);
-        if (task != null)
-            return task;
+        if (task != null) return task;
 
         task = super.epics.get(id);
-        if (task != null)
-            return task;
+        if (task != null) return task;
 
         return super.subtasks.get(id);
     }
@@ -284,25 +282,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
         if (task instanceof Subtask) {
             epicId = String.valueOf(((Subtask) task).getEpicId());
-            return String.format("%d,%s,%s,%s,%s,%s,%s,%s",
-                    task.getId(),
-                    type.name(),
-                    escapeCsv(task.getName()),
-                    task.getStatus().name(),
-                    escapeCsv(task.getDescription()),
-                    epicId,
-                    durationStr,
-                    startTimeStr);
+            return String.format("%d,%s,%s,%s,%s,%s,%s,%s", task.getId(), type.name(), escapeCsv(task.getName()), task.getStatus().name(), escapeCsv(task.getDescription()), epicId, durationStr, startTimeStr);
         } else {
-            return String.format("%d,%s,%s,%s,%s,%s,%s,%s",
-                    task.getId(),
-                    type.name(),
-                    escapeCsv(task.getName()),
-                    task.getStatus().name(),
-                    escapeCsv(task.getDescription()),
-                    "",
-                    durationStr,
-                    startTimeStr);
+            return String.format("%d,%s,%s,%s,%s,%s,%s,%s", task.getId(), type.name(), escapeCsv(task.getName()), task.getStatus().name(), escapeCsv(task.getDescription()), "", durationStr, startTimeStr);
         }
     }
 
