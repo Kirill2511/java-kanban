@@ -36,7 +36,9 @@ public class InMemoryTaskManagerTest {
 
         // then
         assertTrue(taskId > 0);
-        Task createdTask = taskManager.getTask(taskId);
+        var createdTaskOpt = taskManager.getTask(taskId);
+        assertTrue(createdTaskOpt.isPresent());
+        Task createdTask = createdTaskOpt.get();
         assertNotNull(createdTask);
         assertEquals(name, createdTask.getName());
         assertEquals(description, createdTask.getDescription());
@@ -93,15 +95,15 @@ public class InMemoryTaskManagerTest {
     }
 
     /**
-     * Проверяет, что для несуществующей задачи возвращается null.
+     * Проверяет, что для несуществующей задачи возвращается пустой Optional.
      */
     @Test
-    void getTask_shouldReturnNullForNonExistentTask() {
+    void getTask_shouldReturnEmptyForNonExistentTask() {
         // when
-        Task task = taskManager.getTask(999);
+        var taskOpt = taskManager.getTask(999);
 
         // then
-        assertNull(task);
+        assertFalse(taskOpt.isPresent());
     }
 
     /**
@@ -111,14 +113,18 @@ public class InMemoryTaskManagerTest {
     void updateTask_shouldUpdateExistingTask() {
         // given
         int taskId = taskManager.createTask("Исходная задача", "Исходное описание");
-        Task task = taskManager.getTask(taskId);
+        var taskOpt = taskManager.getTask(taskId);
+        assertTrue(taskOpt.isPresent());
+        Task task = taskOpt.get();
         task.setStatus(TaskStatus.IN_PROGRESS);
 
         // when
         taskManager.updateTask(task);
 
         // then
-        Task updatedTask = taskManager.getTask(taskId);
+        var updatedTaskOpt = taskManager.getTask(taskId);
+        assertTrue(updatedTaskOpt.isPresent());
+        Task updatedTask = updatedTaskOpt.get();
         assertEquals(TaskStatus.IN_PROGRESS, updatedTask.getStatus());
     }
 
@@ -143,7 +149,7 @@ public class InMemoryTaskManagerTest {
         taskManager.deleteTask(taskId);
 
         // then
-        assertNull(taskManager.getTask(taskId));
+        assertFalse(taskManager.getTask(taskId).isPresent());
         assertTrue(taskManager.getAllTasks().isEmpty());
     }
 
@@ -177,7 +183,9 @@ public class InMemoryTaskManagerTest {
 
         // then
         assertTrue(epicId > 0);
-        Epic createdEpic = taskManager.getEpic(epicId);
+        var createdEpicOpt = taskManager.getEpic(epicId);
+        assertTrue(createdEpicOpt.isPresent());
+        Epic createdEpic = createdEpicOpt.get();
         assertNotNull(createdEpic);
         assertEquals(name, createdEpic.getName());
         assertEquals(description, createdEpic.getDescription());
@@ -199,10 +207,12 @@ public class InMemoryTaskManagerTest {
         // then
         List<Subtask> subtasks = taskManager.getAllSubtasks();
         assertEquals(1, subtasks.size());
-        Subtask subtask = subtasks.getFirst();
+        Subtask subtask = subtasks.get(0);
         assertEquals(epicId, subtask.getEpicId());
 
-        Epic epic = taskManager.getEpic(epicId);
+        var epicOpt = taskManager.getEpic(epicId);
+        assertTrue(epicOpt.isPresent());
+        Epic epic = epicOpt.get();
         assertEquals(1, epic.getSubtaskIds().size());
         assertTrue(epic.getSubtaskIds().contains(subtask.getId()));
     }
@@ -231,7 +241,7 @@ public class InMemoryTaskManagerTest {
         taskManager.deleteEpic(epicId);
 
         // then
-        assertNull(taskManager.getEpic(epicId));
+        assertFalse(taskManager.getEpic(epicId).isPresent());
         assertTrue(taskManager.getAllSubtasks().isEmpty());
     }
 

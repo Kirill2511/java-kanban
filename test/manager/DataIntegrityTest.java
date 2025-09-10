@@ -35,7 +35,9 @@ public class DataIntegrityTest {
         int taskId = taskManager.createTask("Оригинальная задача", "Оригинальное описание");
 
         // when - получаем задачу и изменяем её
-        Task task = taskManager.getTask(taskId);
+        var taskOpt = taskManager.getTask(taskId);
+        assertTrue(taskOpt.isPresent());
+        Task task = taskOpt.get();
         String originalName = task.getName();
         String originalDescription = task.getDescription();
         TaskStatus originalStatus = task.getStatus();
@@ -46,7 +48,9 @@ public class DataIntegrityTest {
         task.setStatus(TaskStatus.DONE);
 
         // then - проверяем, что внутренние данные НЕ изменились
-        Task freshTask = taskManager.getTask(taskId);
+        var freshTaskOpt = taskManager.getTask(taskId);
+        assertTrue(freshTaskOpt.isPresent());
+        Task freshTask = freshTaskOpt.get();
 
         assertEquals(originalName, freshTask.getName(),
                 "InMemoryTaskManager должен возвращать копии, а не ссылки");
@@ -66,7 +70,9 @@ public class DataIntegrityTest {
         taskManager.createSubtask("Подзадача 1", "Описание 1", epicId);
         taskManager.createSubtask("Подзадача 2", "Описание 2", epicId);
 
-        Epic epic = taskManager.getEpic(epicId);
+        var epicOpt = taskManager.getEpic(epicId);
+        assertTrue(epicOpt.isPresent());
+        Epic epic = epicOpt.get();
         int originalSubtaskCount = epic.getSubtaskIds().size();
 
         // when - пытаемся изменить список подзадач через геттер
@@ -75,7 +81,9 @@ public class DataIntegrityTest {
         subtaskIds.add(999); // Пытаемся добавить невалидный ID
 
         // then - исходный эпик не должен измениться
-        Epic freshEpic = taskManager.getEpic(epicId);
+        var freshEpicOpt = taskManager.getEpic(epicId);
+        assertTrue(freshEpicOpt.isPresent());
+        Epic freshEpic = freshEpicOpt.get();
         assertEquals(originalSubtaskCount, freshEpic.getSubtaskIds().size(),
                 "Список подзадач не должен изменяться через геттер");
         assertFalse(freshEpic.getSubtaskIds().contains(999),
@@ -90,20 +98,24 @@ public class DataIntegrityTest {
     void problem_taskIdModification() {
         // given
         int originalTaskId = taskManager.createTask("Тестовая задача", "Описание");
-        Task task = taskManager.getTask(originalTaskId);
+        var taskOpt = taskManager.getTask(originalTaskId);
+        assertTrue(taskOpt.isPresent());
+        Task task = taskOpt.get();
 
         // when - изменяем ID задачи
         int newTaskId = 999;
         task.setId(newTaskId);
 
         // then - задача должна быть доступна по исходному ID, а не по новому
-        assertNotNull(taskManager.getTask(originalTaskId),
+        assertTrue(taskManager.getTask(originalTaskId).isPresent(),
                 "Задача должна быть доступна по исходному ID");
-        assertNull(taskManager.getTask(newTaskId),
+        assertTrue(taskManager.getTask(newTaskId).isEmpty(),
                 "Задача НЕ должна быть доступна по измененному ID");
 
         // Проверяем, что ID в возвращаемой копии не влияет на внутреннее состояние
-        Task freshTask = taskManager.getTask(originalTaskId);
+        var freshTaskOpt = taskManager.getTask(originalTaskId);
+        assertTrue(freshTaskOpt.isPresent());
+        Task freshTask = freshTaskOpt.get();
         assertEquals(originalTaskId, freshTask.getId(),
                 "ID внутренней задачи не должен измениться");
     }
@@ -124,7 +136,9 @@ public class DataIntegrityTest {
         Subtask subtask2 = subtasks.get(1);
 
         // Проверяем начальный статус
-        Epic epic = taskManager.getEpic(epicId);
+        var epicOpt = taskManager.getEpic(epicId);
+        assertTrue(epicOpt.isPresent());
+        Epic epic = epicOpt.get();
         assertEquals(TaskStatus.NEW, epic.getStatus(), "Изначально эпик должен быть NEW");
 
         // when - одну подзадачу делаем IN_PROGRESS
@@ -132,7 +146,9 @@ public class DataIntegrityTest {
         taskManager.updateSubtask(subtask1);
 
         // then
-        epic = taskManager.getEpic(epicId);
+        var epicOpt2 = taskManager.getEpic(epicId);
+        assertTrue(epicOpt2.isPresent());
+        epic = epicOpt2.get();
         assertEquals(TaskStatus.IN_PROGRESS, epic.getStatus(),
                 "Эпик должен стать IN_PROGRESS когда хотя бы одна подзадача IN_PROGRESS");
 
@@ -143,7 +159,9 @@ public class DataIntegrityTest {
         taskManager.updateSubtask(subtask2);
 
         // then
-        epic = taskManager.getEpic(epicId);
+        var epicOpt3 = taskManager.getEpic(epicId);
+        assertTrue(epicOpt3.isPresent());
+        epic = epicOpt3.get();
         assertEquals(TaskStatus.DONE, epic.getStatus(),
                 "Эпик должен стать DONE когда все подзадачи DONE");
     }
@@ -158,7 +176,7 @@ public class DataIntegrityTest {
         taskManager.createSubtask("Подзадача", "Описание", epicId);
 
         List<Subtask> subtasks = taskManager.getEpicSubtasks(epicId);
-        Subtask subtask = subtasks.getFirst();
+        Subtask subtask = subtasks.get(0);
 
         // when/then - попытка установить ID подзадачи равным ID эпика должна вызвать
         // исключение
@@ -211,7 +229,7 @@ public class DataIntegrityTest {
         taskManager.createSubtask("Подзадача", "Описание подзадачи", epicId);
 
         List<Subtask> subtasks = taskManager.getEpicSubtasks(epicId);
-        int subtaskId = subtasks.getFirst().getId();
+        int subtaskId = subtasks.get(0).getId();
 
         // when - сложная последовательность просмотров
         taskManager.getTask(task1Id); // [Task1]

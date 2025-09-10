@@ -109,14 +109,18 @@ public class FileBackedTaskManagerTest {
         int taskId = manager.createTask("Задача", "Описание");
 
         // Обновляем задачу
-        Task task = manager.getTask(taskId);
+        var taskOpt = manager.getTask(taskId);
+        assertTrue(taskOpt.isPresent());
+        Task task = taskOpt.get();
         task.setStatus(TaskStatus.IN_PROGRESS);
         manager.updateTask(task);
 
         // Загружаем из файла
         FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(tempFile);
 
-        Task loadedTask = loadedManager.getTask(taskId);
+        var loadedTaskOpt = loadedManager.getTask(taskId);
+        assertTrue(loadedTaskOpt.isPresent());
+        Task loadedTask = loadedTaskOpt.get();
         assertEquals(TaskStatus.IN_PROGRESS, loadedTask.getStatus());
     }
 
@@ -146,7 +150,9 @@ public class FileBackedTaskManagerTest {
         manager.createSubtask("Тестовая подзадача", "Описание подзадачи", epicId);
 
         // Обновляем статусы
-        Task task = manager.getTask(taskId);
+        var taskOpt = manager.getTask(taskId);
+        assertTrue(taskOpt.isPresent());
+        Task task = taskOpt.get();
         task.setStatus(TaskStatus.IN_PROGRESS);
         manager.updateTask(task);
 
@@ -164,7 +170,9 @@ public class FileBackedTaskManagerTest {
         assertEquals(1, loadedManager.getAllSubtasks().size());
 
         // Проверяем статус
-        Task loadedTask = loadedManager.getTask(taskId);
+        var loadedTaskOpt = loadedManager.getTask(taskId);
+        assertTrue(loadedTaskOpt.isPresent());
+        Task loadedTask = loadedTaskOpt.get();
         assertEquals(TaskStatus.IN_PROGRESS, loadedTask.getStatus());
     }
 
@@ -177,7 +185,9 @@ public class FileBackedTaskManagerTest {
         manager.createSubtask("Подзадача 2", "Вторая подзадача", epicId);
 
         // Обновляем статусы
-        Task task = manager.getTask(taskId);
+        var taskOpt = manager.getTask(taskId);
+        assertTrue(taskOpt.isPresent());
+        Task task = taskOpt.get();
         task.setStatus(TaskStatus.DONE);
         manager.updateTask(task);
 
@@ -208,8 +218,12 @@ public class FileBackedTaskManagerTest {
             assertFalse(newManager.getHistory().isEmpty());
 
             // Проверяем содержимое
-            Task loadedTask = newManager.getTask(taskId);
-            Epic loadedEpic = newManager.getEpic(epicId);
+            var loadedTaskOpt = newManager.getTask(taskId);
+            assertTrue(loadedTaskOpt.isPresent());
+            Task loadedTask = loadedTaskOpt.get();
+            var loadedEpicOpt = newManager.getEpic(epicId);
+            assertTrue(loadedEpicOpt.isPresent());
+            Epic loadedEpic = loadedEpicOpt.get();
 
             assertNotNull(loadedTask);
             assertEquals("Задача для загрузки", loadedTask.getName());
@@ -263,13 +277,13 @@ public class FileBackedTaskManagerTest {
         FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(tempFile);
 
         // Проверяем, что ID сохранились
-        assertNotNull(loadedManager.getTask(taskId1));
-        assertNotNull(loadedManager.getTask(taskId2));
-        assertNotNull(loadedManager.getEpic(epicId));
+        assertTrue(loadedManager.getTask(taskId1).isPresent());
+        assertTrue(loadedManager.getTask(taskId2).isPresent());
+        assertTrue(loadedManager.getEpic(epicId).isPresent());
 
-        assertEquals("Задача 1", loadedManager.getTask(taskId1).getName());
-        assertEquals("Задача 2", loadedManager.getTask(taskId2).getName());
-        assertEquals("Эпик", loadedManager.getEpic(epicId).getName());
+        assertEquals("Задача 1", loadedManager.getTask(taskId1).get().getName());
+        assertEquals("Задача 2", loadedManager.getTask(taskId2).get().getName());
+        assertEquals("Эпик", loadedManager.getEpic(epicId).get().getName());
     }
 
     @Test
@@ -280,7 +294,9 @@ public class FileBackedTaskManagerTest {
         // Загружаем из файла
         FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(tempFile);
 
-        Task loadedTask = loadedManager.getTask(taskId);
+        var loadedTaskOpt = loadedManager.getTask(taskId);
+        assertTrue(loadedTaskOpt.isPresent());
+        Task loadedTask = loadedTaskOpt.get();
         assertNotNull(loadedTask);
         assertEquals("Задача с пустым описанием", loadedTask.getName());
         assertEquals("", loadedTask.getDescription());
