@@ -22,7 +22,7 @@ public class Task {
         this.name = name;
         this.description = description;
         this.status = TaskStatus.NEW;
-        this.duration = Duration.ofMinutes(0);
+        this.duration = Duration.ZERO;
         this.startTime = null;
     }
 
@@ -36,7 +36,7 @@ public class Task {
         this.name = name;
         this.description = description;
         this.status = TaskStatus.NEW;
-        this.duration = duration != null ? duration : Duration.ofMinutes(0);
+        this.duration = duration != null ? duration : Duration.ZERO;
         this.startTime = startTime;
     }
 
@@ -54,7 +54,7 @@ public class Task {
         this.name = name;
         this.description = description;
         this.status = status;
-        this.duration = Duration.ofMinutes(0);
+        this.duration = Duration.ZERO;
         this.startTime = null;
     }
 
@@ -73,7 +73,7 @@ public class Task {
         this.name = name;
         this.description = description;
         this.status = status;
-        this.duration = duration != null ? duration : Duration.ofMinutes(0);
+        this.duration = duration != null ? duration : Duration.ZERO;
         this.startTime = startTime;
     }
 
@@ -133,7 +133,7 @@ public class Task {
     }
 
     public void setDuration(Duration duration) {
-        this.duration = duration != null ? duration : Duration.ofMinutes(0);
+        this.duration = duration != null ? duration : Duration.ZERO;
     }
 
     public LocalDateTime getStartTime() {

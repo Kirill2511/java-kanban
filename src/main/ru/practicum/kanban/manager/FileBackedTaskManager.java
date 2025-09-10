@@ -16,6 +16,7 @@ import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final String CSV_HEADER = "id,type,name,status,description,epic,duration,startTime\n";
     private final File file;
 
     public FileBackedTaskManager(File file) {
@@ -247,7 +248,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
 
             // Заголовок CSV
-            writer.write("id,type,name,status,description,epic,duration,startTime\n");
+            writer.write(CSV_HEADER);
 
             // Сохраняем обычные задачи
             for (Task task : getAllTasks()) {

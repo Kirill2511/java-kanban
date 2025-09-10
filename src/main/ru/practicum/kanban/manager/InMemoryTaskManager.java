@@ -15,28 +15,25 @@ public class InMemoryTaskManager implements TaskManager {
     protected final Map<Integer, Subtask> subtasks = new HashMap<>();
     protected final HistoryManager historyManager = Managers.getDefaultHistory();
     // TreeSet для хранения задач, отсортированных по времени начала
-    protected final Set<Task> prioritizedTasks = new TreeSet<>(new Comparator<Task>() {
-        @Override
-        public int compare(Task t1, Task t2) {
-            // Если у одной из задач нет startTime, она не должна учитываться в приоритете
-            if (t1.getStartTime() == null && t2.getStartTime() == null) {
-                return Integer.compare(t1.getId(), t2.getId()); // Сортируем по ID для стабильности
-            }
-            if (t1.getStartTime() == null) {
-                return 1; // Задачи без времени идут в конец
-            }
-            if (t2.getStartTime() == null) {
-                return -1; // Задачи без времени идут в конец
-            }
-
-            int timeComparison = t1.getStartTime().compareTo(t2.getStartTime());
-            if (timeComparison != 0) {
-                return timeComparison;
-            }
-
-            // Если время одинаковое, сравниваем по ID для стабильности
-            return Integer.compare(t1.getId(), t2.getId());
+    protected final Set<Task> prioritizedTasks = new TreeSet<>((t1, t2) -> {
+        // Если у одной из задач нет startTime, она не должна учитываться в приоритете
+        if (t1.getStartTime() == null && t2.getStartTime() == null) {
+            return Integer.compare(t1.getId(), t2.getId()); // Сортируем по ID для стабильности
         }
+        if (t1.getStartTime() == null) {
+            return 1; // Задачи без времени идут в конец
+        }
+        if (t2.getStartTime() == null) {
+            return -1; // Задачи без времени идут в конец
+        }
+
+        int timeComparison = t1.getStartTime().compareTo(t2.getStartTime());
+        if (timeComparison != 0) {
+            return timeComparison;
+        }
+
+        // Если время одинаковое, сравниваем по ID для стабильности
+        return Integer.compare(t1.getId(), t2.getId());
     });
     protected int nextId = 1;
 

@@ -19,12 +19,12 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     protected T manager;
 
-    protected abstract T createTaskManager();
-
     @BeforeEach
     void setUp() {
         manager = createTaskManager();
     }
+
+    protected abstract T createTaskManager();
 
     @Test
     void testCreateTask() {
@@ -99,7 +99,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         List<Subtask> subtasks = manager.getAllSubtasks();
         assertEquals(1, subtasks.size());
 
-        Subtask subtask = subtasks.get(0);
+        Subtask subtask = subtasks.getFirst();
         assertEquals("Subtask", subtask.getName());
         assertEquals("Subtask Description", subtask.getDescription());
         assertEquals(epicId, subtask.getEpicId());
@@ -190,7 +190,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         manager.updateTask(earlyTask);
 
         List<Task> prioritized = manager.getPrioritizedTasks();
-        
+
         // Проверяем порядок: сначала задачи по времени, потом без времени
         assertTrue(prioritized.size() >= 3);
         assertEquals(task3Id, prioritized.get(0).getId()); // Самая ранняя
