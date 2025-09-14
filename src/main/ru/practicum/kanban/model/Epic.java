@@ -84,40 +84,52 @@ public class Epic extends Task {
     // Методы для обновления расчетных полей на основе подзадач
     public void updateCalculatedFields(List<Subtask> subtasks) {
         if (subtasks == null || subtasks.isEmpty()) {
-            this.duration = Duration.ofMinutes(0);
-            this.startTime = null;
-            this.endTime = null;
+            resetCalculatedFields();
             return;
         }
 
-        // Рассчитываем общую продолжительность
-        long totalMinutes = 0;
-        LocalDateTime earliestStart = null;
-        LocalDateTime latestEnd = null;
+        this.duration = calculateTotalDuration(subtasks);
+        this.startTime = calculateEarliestStartTime(subtasks);
+        this.endTime = calculateLatestEndTime(subtasks);
+    }
 
+    private void resetCalculatedFields() {
+        this.duration = Duration.ZERO;
+        this.startTime = null;
+        this.endTime = null;
+    }
+
+    private Duration calculateTotalDuration(List<Subtask> subtasks) {
+        long totalMinutes = 0;
         for (Subtask subtask : subtasks) {
-            // Суммируем продолжительность
             if (subtask.getDuration() != null) {
                 totalMinutes += subtask.getDuration().toMinutes();
             }
+        }
+        return Duration.ofMinutes(totalMinutes);
+    }
 
-            // Находим самое раннее время начала
+    private LocalDateTime calculateEarliestStartTime(List<Subtask> subtasks) {
+        LocalDateTime earliestStart = null;
+        for (Subtask subtask : subtasks) {
             if (subtask.getStartTime() != null) {
                 if (earliestStart == null || subtask.getStartTime().isBefore(earliestStart)) {
                     earliestStart = subtask.getStartTime();
                 }
             }
+        }
+        return earliestStart;
+    }
 
-            // Находим самое позднее время завершения
+    private LocalDateTime calculateLatestEndTime(List<Subtask> subtasks) {
+        LocalDateTime latestEnd = null;
+        for (Subtask subtask : subtasks) {
             if (subtask.getEndTime() != null) {
                 if (latestEnd == null || subtask.getEndTime().isAfter(latestEnd)) {
                     latestEnd = subtask.getEndTime();
                 }
             }
         }
-
-        this.duration = Duration.ofMinutes(totalMinutes);
-        this.startTime = earliestStart;
-        this.endTime = latestEnd;
+        return latestEnd;
     }
 }

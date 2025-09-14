@@ -14,28 +14,13 @@ public class InMemoryTaskManager implements TaskManager {
     protected final Map<Integer, Epic> epics = new HashMap<>();
     protected final Map<Integer, Subtask> subtasks = new HashMap<>();
     protected final HistoryManager historyManager = Managers.getDefaultHistory();
-    // TreeSet для хранения задач, отсортированных по времени начала
-    protected final Set<Task> prioritizedTasks = new TreeSet<>((t1, t2) -> {
-        // Если у одной из задач нет startTime, она не должна учитываться в приоритете
-        if (t1.getStartTime() == null && t2.getStartTime() == null) {
-            return Integer.compare(t1.getId(), t2.getId()); // Сортируем по ID для стабильности
-        }
-        if (t1.getStartTime() == null) {
-            return 1; // Задачи без времени идут в конец
-        }
-        if (t2.getStartTime() == null) {
-            return -1; // Задачи без времени идут в конец
-        }
-
-        int timeComparison = t1.getStartTime().compareTo(t2.getStartTime());
-        if (timeComparison != 0) {
-            return timeComparison;
-        }
-
-        // Если время одинаковое, сравниваем по ID для стабильности
-        return Integer.compare(t1.getId(), t2.getId());
-    });
+    protected final Set<Task> prioritizedTasks = new TreeSet<>(createTaskComparator());
     protected int nextId = 1;
+
+    private static Comparator<Task> createTaskComparator() {
+        return Comparator.comparing(Task::getStartTime, Comparator.nullsLast(Comparator.naturalOrder()))
+                .thenComparing(Task::getId);
+    }
 
     // Методы для обычных задач
     @Override
@@ -63,10 +48,24 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     // Добавление задачи в приоритизированный список
-    protected void addToPrioritizedTasks(Task task) {
-        if (task != null && task.getStartTime() != null) {
-            prioritizedTasks.add(task);
+    protected void addToPrioritizedTasks(Task newTask) {
+        if (newTask == null || newTask.getStartTime() == null) {
+            return;
         }
+
+        prioritizedTasks.stream()
+                .filter(existingTask -> isTasksOverlapping(newTask, existingTask))
+                .findFirst()
+                .ifPresentOrElse(
+                        // Если нашлась задача с пересекающимся временем, то генерируем исключение
+                        overlappedTask -> {
+                            String message = "Задача пересекается с id=" + overlappedTask.getId() +
+                                    " c " + overlappedTask.getStartTime() + " по " +
+                                    overlappedTask.getEndTime();
+                            throw new TaskValidationException(message);
+                        },
+                        // если задач пересекающихся по времени нет, то добавляем новую задачу
+                        () -> prioritizedTasks.add(newTask));
     }
 
     @Override
@@ -94,11 +93,6 @@ public class InMemoryTaskManager implements TaskManager {
             throw new IllegalArgumentException("Задача не может быть пустой");
         }
         if (tasks.containsKey(task.getId())) {
-            // Проверяем на пересечение времени с другими задачами
-            if (hasTimeConflict(task)) {
-                throw new TaskValidationException("Задача пересекается по времени с существующими задачами");
-            }
-
             Task oldTask = tasks.get(task.getId());
             Task newTask = new Task(task);
             tasks.put(task.getId(), newTask);
@@ -249,11 +243,6 @@ public class InMemoryTaskManager implements TaskManager {
         if (subtasks.containsKey(subtask.getId())) {
             Epic epic = epics.get(subtask.getEpicId());
             if (epic != null) {
-                // Проверяем на пересечение времени с другими задачами
-                if (hasTimeConflict(subtask)) {
-                    throw new TaskValidationException("Подзадача пересекается по времени с существующими задачами");
-                }
-
                 Subtask oldSubtask = subtasks.get(subtask.getId());
                 Subtask newSubtask = new Subtask(subtask);
                 subtasks.put(subtask.getId(), newSubtask);
@@ -364,7 +353,11 @@ public class InMemoryTaskManager implements TaskManager {
 
     // Обновление статуса эпика на основе подзадач
     protected void updateEpicStatus(Epic epic) {
-        List<Subtask> epicSubtasks = getEpicSubtasks(epic.getId());
+        // Получаем актуальные подзадачи из хранилища (не копии)
+        List<Subtask> epicSubtasks = epic.getSubtaskIds().stream()
+                .map(subtasks::get)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
 
         if (epicSubtasks.isEmpty()) {
             epic.setStatus(TaskStatus.NEW);
@@ -373,20 +366,26 @@ public class InMemoryTaskManager implements TaskManager {
         }
 
         boolean allDone = true;
+        boolean allNew = true;
         boolean anyInProgress = false;
 
         for (Subtask subtask : epicSubtasks) {
-            if (subtask.getStatus() != TaskStatus.DONE) {
+            TaskStatus status = subtask.getStatus();
+
+            if (status != TaskStatus.DONE) {
                 allDone = false;
             }
-            if (subtask.getStatus() == TaskStatus.IN_PROGRESS) {
+            if (status != TaskStatus.NEW) {
+                allNew = false;
+            }
+            if (status == TaskStatus.IN_PROGRESS) {
                 anyInProgress = true;
             }
         }
 
         if (allDone) {
             epic.setStatus(TaskStatus.DONE);
-        } else if (anyInProgress) {
+        } else if (anyInProgress || (!allNew && !allDone)) {
             epic.setStatus(TaskStatus.IN_PROGRESS);
         } else {
             epic.setStatus(TaskStatus.NEW);
@@ -409,7 +408,7 @@ public class InMemoryTaskManager implements TaskManager {
             prioritizedTasks.remove(oldTask);
         }
         if (newTask != null && newTask.getStartTime() != null) {
-            prioritizedTasks.add(newTask);
+            addToPrioritizedTasks(newTask);
         }
     }
 }
