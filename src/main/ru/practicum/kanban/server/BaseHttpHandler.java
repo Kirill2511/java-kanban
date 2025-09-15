@@ -11,7 +11,7 @@ public class BaseHttpHandler {
 
     /**
      * Отправляет успешный ответ с данными в формате JSON
-     * 
+     *
      * @param h    HTTP обмен
      * @param text JSON строка для отправки
      * @throws IOException при ошибке отправки
@@ -26,7 +26,7 @@ public class BaseHttpHandler {
 
     /**
      * Отправляет успешный ответ без данных (HTTP 200)
-     * 
+     *
      * @param h HTTP обмен
      * @throws IOException при ошибке отправки
      */
@@ -38,7 +38,7 @@ public class BaseHttpHandler {
 
     /**
      * Отправляет ответ 201 (Created) при успешном создании/обновлении
-     * 
+     *
      * @param h HTTP обмен
      * @throws IOException при ошибке отправки
      */
@@ -50,7 +50,7 @@ public class BaseHttpHandler {
 
     /**
      * Отправляет ответ 404 (Not Found) когда объект не найден
-     * 
+     *
      * @param h HTTP обмен
      * @throws IOException при ошибке отправки
      */
@@ -65,7 +65,7 @@ public class BaseHttpHandler {
 
     /**
      * Отправляет ответ 406 (Not Acceptable) при пересечении задач
-     * 
+     *
      * @param h HTTP обмен
      * @throws IOException при ошибке отправки
      */
@@ -80,7 +80,7 @@ public class BaseHttpHandler {
 
     /**
      * Отправляет ответ 500 (Internal Server Error) при внутренней ошибке
-     * 
+     *
      * @param h       HTTP обмен
      * @param message сообщение об ошибке
      * @throws IOException при ошибке отправки
@@ -96,7 +96,7 @@ public class BaseHttpHandler {
 
     /**
      * Отправляет ответ 400 (Bad Request) при некорректном запросе
-     * 
+     *
      * @param h       HTTP обмен
      * @param message сообщение об ошибке
      * @throws IOException при ошибке отправки
@@ -112,7 +112,7 @@ public class BaseHttpHandler {
 
     /**
      * Читает тело HTTP запроса
-     * 
+     *
      * @param h HTTP обмен
      * @return строка с телом запроса
      * @throws IOException при ошибке чтения
@@ -123,7 +123,7 @@ public class BaseHttpHandler {
 
     /**
      * Извлекает ID из пути запроса (например, из /tasks/123 извлекает 123)
-     * 
+     *
      * @param path путь запроса
      * @return ID или -1 если не найден
      */
