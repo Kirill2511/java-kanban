@@ -6,20 +6,70 @@ import main.ru.practicum.kanban.manager.TaskManager;
 import main.ru.practicum.kanban.model.Epic;
 import main.ru.practicum.kanban.model.Subtask;
 import main.ru.practicum.kanban.model.Task;
+import main.ru.practicum.kanban.server.HttpTaskServer;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) {
         System.out.println("Поехали!");
 
-        // Демонстрация обычного менеджера в памяти
-        demonstrateInMemoryTaskManager();
+        // Проверяем аргументы командной строки
+        if (args.length > 0 && "server".equals(args[0])) {
+            // Запуск HTTP сервера
+            startHttpServer();
+        } else {
+            // Демонстрация работы TaskManager (по умолчанию)
+            System.out.println("Режим демонстрации. Для запуска HTTP сервера используйте: java Main server");
 
-        // Демонстрация файлового менеджера
-        demonstrateFileBackedTaskManager();
+            // Демонстрация обычного менеджера в памяти
+            demonstrateInMemoryTaskManager();
+
+            // Демонстрация файлового менеджера
+            demonstrateFileBackedTaskManager();
+        }
+    }
+
+    private static void startHttpServer() {
+        System.out.println("\n========== ЗАПУСК HTTP СЕРВЕРА ==========\n");
+
+        try {
+            HttpTaskServer server = new HttpTaskServer();
+            server.start();
+
+            System.out.println("HTTP сервер запущен на порту 8080");
+            System.out.println("Доступные эндпоинты:");
+            System.out.println("  GET    /tasks           - получить все задачи");
+            System.out.println("  GET    /tasks/{id}      - получить задачу по ID");
+            System.out.println("  POST   /tasks          - создать/обновить задачу");
+            System.out.println("  DELETE /tasks/{id}      - удалить задачу");
+            System.out.println("  GET    /subtasks        - получить все подзадачи");
+            System.out.println("  GET    /subtasks/{id}   - получить подзадачу по ID");
+            System.out.println("  POST   /subtasks       - создать/обновить подзадачу");
+            System.out.println("  DELETE /subtasks/{id}   - удалить подзадачу");
+            System.out.println("  GET    /epics           - получить все эпики");
+            System.out.println("  GET    /epics/{id}      - получить эпик по ID");
+            System.out.println("  GET    /epics/{id}/subtasks - получить подзадачи эпика");
+            System.out.println("  POST   /epics          - создать эпик");
+            System.out.println("  DELETE /epics/{id}      - удалить эпик");
+            System.out.println("  GET    /history         - получить историю");
+            System.out.println("  GET    /prioritized     - получить задачи по приоритету");
+            System.out.println("\nДля остановки сервера нажмите Enter");
+
+            // Ждем нажатия Enter для остановки сервера
+            Scanner scanner = new Scanner(System.in);
+            scanner.nextLine();
+
+            server.stop();
+            System.out.println("HTTP сервер остановлен");
+
+        } catch (IOException e) {
+            System.err.println("Ошибка запуска HTTP сервера: " + e.getMessage());
+        }
     }
 
     private static void demonstrateInMemoryTaskManager() {
