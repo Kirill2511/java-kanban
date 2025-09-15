@@ -43,7 +43,7 @@ public class JsonUtils {
 
     /**
      * Преобразует объект в JSON строку
-     * 
+     *
      * @param object объект для сериализации
      * @return JSON строка
      */
@@ -53,7 +53,7 @@ public class JsonUtils {
 
     /**
      * Преобразует JSON строку в объект указанного типа
-     * 
+     *
      * @param json  JSON строка
      * @param clazz класс результирующего объекта
      * @return объект указанного типа
@@ -65,7 +65,7 @@ public class JsonUtils {
 
     /**
      * Проверяет, является ли строка валидным JSON
-     * 
+     *
      * @param json строка для проверки
      * @return true если JSON валиден, false иначе
      */
