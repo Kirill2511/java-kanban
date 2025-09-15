@@ -98,10 +98,13 @@ public class HttpTaskManagerHistoryAndPriorityTest {
         Task task1 = task1Opt.get();
         Task task2 = task2Opt.get();
 
-        // задача 2 начинается раньше задачи 1
-        task1.setStartTime(LocalDateTime.now().plusHours(2));
+        // используем фиксированное базовое время для избежания пересечений
+        LocalDateTime baseTime = LocalDateTime.of(2024, 1, 15, 10, 0);
+        
+        // задача 2 начинается раньше задачи 1, без пересечений
+        task1.setStartTime(baseTime.plusHours(2)); // 12:00-13:00
         task1.setDuration(Duration.ofHours(1));
-        task2.setStartTime(LocalDateTime.now().plusHours(1));
+        task2.setStartTime(baseTime); // 10:00-11:00
         task2.setDuration(Duration.ofHours(1));
 
         manager.updateTask(task1);
