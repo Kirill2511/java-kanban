@@ -39,17 +39,21 @@ public class InMemoryTaskManagerExtendedTest {
         // Получаем ID подзадачи из списка подзадач эпика
         List<Subtask> epicSubtasks = taskManager.getEpicSubtasks(epicId);
         assertEquals(1, epicSubtasks.size());
-        int subtaskId = epicSubtasks.getFirst().getId();
+        int subtaskId = epicSubtasks.get(0).getId();
 
         // Проверяем, что подзадача добавлена в эпик
-        Epic epic = taskManager.getEpic(epicId);
+        var epicOpt = taskManager.getEpic(epicId);
+        assertTrue(epicOpt.isPresent());
+        Epic epic = epicOpt.get();
         assertTrue(epic.getSubtaskIds().contains(subtaskId));
 
         // when
         taskManager.deleteSubtask(subtaskId);
 
         // then
-        epic = taskManager.getEpic(epicId);
+        var epicOpt2 = taskManager.getEpic(epicId);
+        assertTrue(epicOpt2.isPresent());
+        epic = epicOpt2.get();
         assertFalse(epic.getSubtaskIds().contains(subtaskId),
                 "ID удаленной подзадачи не должен оставаться в эпике");
         assertTrue(epic.getSubtaskIds().isEmpty(),
@@ -71,16 +75,20 @@ public class InMemoryTaskManagerExtendedTest {
         assertEquals(2, epicSubtasks.size());
 
         // Эпик должен быть NEW когда все подзадачи NEW
-        Epic epic = taskManager.getEpic(epicId);
+        var epicOpt = taskManager.getEpic(epicId);
+        assertTrue(epicOpt.isPresent());
+        Epic epic = epicOpt.get();
         assertEquals(TaskStatus.NEW, epic.getStatus());
 
         // when - одну подзадачу делаем IN_PROGRESS
-        Subtask subtask1 = epicSubtasks.getFirst();
+        Subtask subtask1 = epicSubtasks.get(0);
         subtask1.setStatus(TaskStatus.IN_PROGRESS);
         taskManager.updateSubtask(subtask1);
 
         // then - эпик должен стать IN_PROGRESS
-        epic = taskManager.getEpic(epicId);
+        epicOpt = taskManager.getEpic(epicId);
+        assertTrue(epicOpt.isPresent());
+        epic = epicOpt.get();
         assertEquals(TaskStatus.IN_PROGRESS, epic.getStatus());
 
         // when - обе подзадачи делаем DONE
@@ -92,7 +100,9 @@ public class InMemoryTaskManagerExtendedTest {
         taskManager.updateSubtask(subtask2);
 
         // then - эпик должен стать DONE
-        epic = taskManager.getEpic(epicId);
+        epicOpt = taskManager.getEpic(epicId);
+        assertTrue(epicOpt.isPresent());
+        epic = epicOpt.get();
         assertEquals(TaskStatus.DONE, epic.getStatus());
     }
 
@@ -108,18 +118,23 @@ public class InMemoryTaskManagerExtendedTest {
         int taskId = taskManager.createTask("Тестовая задача", "Описание");
 
         // when - получаем задачу и пытаемся изменить её ID
-        Task retrievedTask = taskManager.getTask(taskId);
+        var retrievedTaskOpt = taskManager.getTask(taskId);
+        assertTrue(retrievedTaskOpt.isPresent());
+        Task retrievedTask = retrievedTaskOpt.get();
         int originalId = retrievedTask.getId();
 
         // Это потенциально опасная операция
         retrievedTask.setId(999);
 
         // then - задача должна по-прежнему быть доступна по исходному ID
-        Task taskByOriginalId = taskManager.getTask(originalId);
-        Task taskByNewId = taskManager.getTask(999);
+        var taskByOriginalIdOpt = taskManager.getTask(originalId);
+        assertTrue(taskByOriginalIdOpt.isPresent());
+        Task taskByOriginalId = taskByOriginalIdOpt.get();
+        var taskByNewIdOpt = taskManager.getTask(999);
+        assertTrue(taskByNewIdOpt.isEmpty());
 
         assertNotNull(taskByOriginalId, "Задача должна быть доступна по исходному ID");
-        assertNull(taskByNewId, "Задача не должна быть доступна по новому ID");
+        assertTrue(taskByNewIdOpt.isEmpty(), "Задача не должна быть доступна по новому ID");
     }
 
     /**
@@ -132,15 +147,19 @@ public class InMemoryTaskManagerExtendedTest {
         taskManager.createSubtask("Подзадача", "Описание подзадачи", epicId);
 
         List<Subtask> epicSubtasks = taskManager.getEpicSubtasks(epicId);
-        int subtaskId = epicSubtasks.getFirst().getId();
+        int subtaskId = epicSubtasks.get(0).getId();
 
         // when - получаем эпик и пытаемся изменить список подзадач
-        Epic retrievedEpic = taskManager.getEpic(epicId);
+        var retrievedEpicOpt = taskManager.getEpic(epicId);
+        assertTrue(retrievedEpicOpt.isPresent());
+        Epic retrievedEpic = retrievedEpicOpt.get();
         List<Integer> subtaskIds = retrievedEpic.getSubtaskIds();
         subtaskIds.clear(); // Пытаемся очистить список подзадач
 
         // then - внутренний список подзадач не должен измениться
-        Epic internalEpic = taskManager.getEpic(epicId);
+        var internalEpicOpt = taskManager.getEpic(epicId);
+        assertTrue(internalEpicOpt.isPresent());
+        Epic internalEpic = internalEpicOpt.get();
         assertFalse(internalEpic.getSubtaskIds().isEmpty(),
                 "Список подзадач во внутреннем эпике не должен быть пустым");
         assertTrue(internalEpic.getSubtaskIds().contains(subtaskId),
@@ -159,7 +178,7 @@ public class InMemoryTaskManagerExtendedTest {
         taskManager.createSubtask("Подзадача", "Описание", epicId);
 
         List<Subtask> subtasks = taskManager.getAllSubtasks();
-        int subtaskId = subtasks.getFirst().getId();
+        int subtaskId = subtasks.get(0).getId();
 
         // Просматриваем все элементы (добавляем в историю)
         taskManager.getTask(taskId);
@@ -175,7 +194,7 @@ public class InMemoryTaskManagerExtendedTest {
         // then
         List<Task> historyAfter = taskManager.getHistory();
         assertEquals(1, historyAfter.size(), "В истории должна остаться только обычная задача");
-        assertEquals(taskId, historyAfter.getFirst().getId(), "В истории должна остаться только обычная задача");
+        assertEquals(taskId, historyAfter.get(0).getId(), "В истории должна остаться только обычная задача");
 
         // Проверяем, что эпик и подзадача удалены из истории
         assertFalse(historyAfter.stream().anyMatch(task -> task.getId() == epicId),
@@ -223,7 +242,9 @@ public class InMemoryTaskManagerExtendedTest {
         }
 
         // then
-        Epic epic = taskManager.getEpic(epicId);
+        var epicOpt = taskManager.getEpic(epicId);
+        assertTrue(epicOpt.isPresent());
+        Epic epic = epicOpt.get();
         assertEquals(SUBTASK_COUNT, epic.getSubtaskIds().size());
 
         List<Subtask> allSubtasks = taskManager.getAllSubtasks();

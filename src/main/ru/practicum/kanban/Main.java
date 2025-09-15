@@ -185,10 +185,12 @@ public class Main {
         printAllTasks(loadedManager);
 
         // Проверяем, что данные загрузились корректно
-        Task loadedTask = loadedManager.getTask(taskId);
-        Epic loadedEpic = loadedManager.getEpic(epicId);
+        var loadedTaskOpt = loadedManager.getTask(taskId);
+        var loadedEpicOpt = loadedManager.getEpic(epicId);
 
-        if (loadedTask != null && loadedEpic != null) {
+        if (loadedTaskOpt.isPresent() && loadedEpicOpt.isPresent()) {
+            Task loadedTask = loadedTaskOpt.get();
+            Epic loadedEpic = loadedEpicOpt.get();
             System.out.println("✓ Данные загрузились корректно!");
             System.out.println("✓ Задача: " + loadedTask.getName());
             System.out.println("✓ Эпик: " + loadedEpic.getName());

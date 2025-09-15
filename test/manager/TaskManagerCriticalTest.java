@@ -36,9 +36,15 @@ public class TaskManagerCriticalTest {
         int subtaskId = subtasks.getFirst().getId();
 
         // when
-        Task retrievedTask = taskManager.getTask(taskId);
-        Epic retrievedEpic = taskManager.getEpic(epicId);
-        Subtask retrievedSubtask = taskManager.getSubtask(subtaskId);
+        var retrievedTaskOpt = taskManager.getTask(taskId);
+        assertTrue(retrievedTaskOpt.isPresent());
+        Task retrievedTask = retrievedTaskOpt.get();
+        var retrievedEpicOpt = taskManager.getEpic(epicId);
+        assertTrue(retrievedEpicOpt.isPresent());
+        Epic retrievedEpic = retrievedEpicOpt.get();
+        var retrievedSubtaskOpt = taskManager.getSubtask(subtaskId);
+        assertTrue(retrievedSubtaskOpt.isPresent());
+        Subtask retrievedSubtask = retrievedSubtaskOpt.get();
 
         // then
         assertNotNull(retrievedTask, "Задача должна быть найдена по ID");
@@ -65,7 +71,9 @@ public class TaskManagerCriticalTest {
         updatedTask.setStatus(TaskStatus.IN_PROGRESS);
 
         taskManager.updateTask(updatedTask);
-        Task retrieved = taskManager.getTask(taskId);
+        var retrievedOpt = taskManager.getTask(taskId);
+        assertTrue(retrievedOpt.isPresent());
+        Task retrieved = retrievedOpt.get();
 
         // then
         assertNotNull(retrieved, "Задача должна существовать");
@@ -89,8 +97,12 @@ public class TaskManagerCriticalTest {
         int taskId = taskManager.createTask("Оригинальная задача", "Оригинальное описание");
 
         // when
-        Task firstCopy = taskManager.getTask(taskId);
-        Task secondCopy = taskManager.getTask(taskId);
+        var firstCopyOpt = taskManager.getTask(taskId);
+        assertTrue(firstCopyOpt.isPresent());
+        Task firstCopy = firstCopyOpt.get();
+        var secondCopyOpt = taskManager.getTask(taskId);
+        assertTrue(secondCopyOpt.isPresent());
+        Task secondCopy = secondCopyOpt.get();
 
         // Изменяем первую копию
         firstCopy.setName("Измененное имя");
@@ -107,7 +119,9 @@ public class TaskManagerCriticalTest {
                 "Изменение одной копии не должно влиять на статус другой");
 
         // Проверяем, что задача в менеджере тоже не изменилась
-        Task fromManager = taskManager.getTask(taskId);
+        var fromManagerOpt = taskManager.getTask(taskId);
+        assertTrue(fromManagerOpt.isPresent());
+        Task fromManager = fromManagerOpt.get();
         assertEquals("Оригинальная задача", fromManager.getName(),
                 "Задача в менеджере должна сохранить оригинальное имя");
         assertEquals("Оригинальное описание", fromManager.getDescription(),
@@ -124,7 +138,9 @@ public class TaskManagerCriticalTest {
     void taskManager_shouldMaintainTaskIntegrityWhenUpdating() {
         // given
         int taskId = taskManager.createTask("Оригинал", "Оригинальное описание");
-        Task originalTask = taskManager.getTask(taskId);
+        var originalTaskOpt = taskManager.getTask(taskId);
+        assertTrue(originalTaskOpt.isPresent());
+        Task originalTask = originalTaskOpt.get();
 
         // Создаём копию для модификации
         Task modifiedTask = new Task(originalTask.getName(), originalTask.getDescription());
@@ -140,7 +156,9 @@ public class TaskManagerCriticalTest {
         modifiedTask.setDescription("Внешне измененное описание");
 
         // then
-        Task retrievedTask = taskManager.getTask(taskId);
+        var retrievedTaskOpt = taskManager.getTask(taskId);
+        assertTrue(retrievedTaskOpt.isPresent());
+        Task retrievedTask = retrievedTaskOpt.get();
         assertEquals("Изменено", retrievedTask.getName(),
                 "Задача должна сохранить обновлённое имя, а не внешние изменения");
         assertEquals("Оригинальное описание", retrievedTask.getDescription(),
@@ -179,7 +197,9 @@ public class TaskManagerCriticalTest {
                 "ID подзадач должны быть уникальными");
 
         // Проверяем, что эпик содержит ссылки на все свои подзадачи
-        Epic epic = taskManager.getEpic(epicId);
+        var epicOpt = taskManager.getEpic(epicId);
+        assertTrue(epicOpt.isPresent());
+        Epic epic = epicOpt.get();
         assertEquals(2, epic.getSubtaskIds().size(),
                 "Эпик должен содержать ссылки на все подзадачи");
 
@@ -212,11 +232,11 @@ public class TaskManagerCriticalTest {
         taskManager.updateEpic(nonExistentEpic);
         taskManager.updateSubtask(nonExistentSubtask);
 
-        assertNull(taskManager.getTask(999),
+        assertFalse(taskManager.getTask(999).isPresent(),
                 "Несуществующая задача не должна быть создана при обновлении");
-        assertNull(taskManager.getEpic(998),
+        assertFalse(taskManager.getEpic(998).isPresent(),
                 "Несуществующий эпик не должен быть создан при обновлении");
-        assertNull(taskManager.getSubtask(997),
+        assertFalse(taskManager.getSubtask(997).isPresent(),
                 "Несуществующая подзадача не должна быть создана при обновлении");
     }
 
@@ -238,11 +258,11 @@ public class TaskManagerCriticalTest {
         taskManager.deleteEpic(epicId);
 
         // then
-        assertNull(taskManager.getEpic(epicId),
+        assertFalse(taskManager.getEpic(epicId).isPresent(),
                 "Эпик должен быть удален");
-        assertNull(taskManager.getSubtask(subtask1Id),
+        assertFalse(taskManager.getSubtask(subtask1Id).isPresent(),
                 "Подзадача 1 должна быть удалена вместе с эпиком");
-        assertNull(taskManager.getSubtask(subtask2Id),
+        assertFalse(taskManager.getSubtask(subtask2Id).isPresent(),
                 "Подзадача 2 должна быть удалена вместе с эпиком");
 
         // Проверяем, что подзадачи не остались в общем списке
@@ -264,7 +284,9 @@ public class TaskManagerCriticalTest {
         taskManager.createSubtask("Подзадача 2", "Описание 2", epicId);
 
         // when
-        Epic epic = taskManager.getEpic(epicId);
+        var epicOpt = taskManager.getEpic(epicId);
+        assertTrue(epicOpt.isPresent());
+        Epic epic = epicOpt.get();
         List<Subtask> subtasks = taskManager.getEpicSubtasks(epicId);
 
         // then
@@ -286,7 +308,9 @@ public class TaskManagerCriticalTest {
         taskManager.deleteSubtask(firstSubtaskId);
 
         // then - проверяем обновление связей
-        Epic updatedEpic = taskManager.getEpic(epicId);
+        var updatedEpicOpt = taskManager.getEpic(epicId);
+        assertTrue(updatedEpicOpt.isPresent());
+        Epic updatedEpic = updatedEpicOpt.get();
         List<Subtask> remainingSubtasks = taskManager.getEpicSubtasks(epicId);
 
         assertEquals(1, updatedEpic.getSubtaskIds().size(),
@@ -295,7 +319,7 @@ public class TaskManagerCriticalTest {
                 "Должна быть получена 1 оставшаяся подзадача");
         assertFalse(updatedEpic.getSubtaskIds().contains(firstSubtaskId),
                 "Эпик не должен содержать ID удаленной подзадачи");
-        assertNull(taskManager.getSubtask(firstSubtaskId),
+        assertFalse(taskManager.getSubtask(firstSubtaskId).isPresent(),
                 "Удаленная подзадача не должна быть доступна");
     }
 }
