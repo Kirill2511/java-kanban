@@ -90,7 +90,7 @@ Content-Type: application/json
 DELETE /tasks/{id}
 ```
 
-**Ответ**: 200 Created или 404 если не найдена
+**Ответ**: 200 OK или 404 если не найдена
 
 ### Подзадачи (Subtasks)
 

@@ -31,14 +31,10 @@ public class JsonUtils {
     }
 
     /**
-     * Создает публичный экземпляр настроенного Gson для внешнего использования
+     * Возвращает настроенный экземпляр Gson для внешнего использования
      */
     public static Gson createConfiguredGson() {
-        return new GsonBuilder()
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-                .registerTypeAdapter(Duration.class, new DurationAdapter())
-                .setPrettyPrinting()
-                .create();
+        return gson;
     }
 
     /**
@@ -61,21 +57,6 @@ public class JsonUtils {
      */
     public static <T> T fromJson(String json, Class<T> clazz) throws JsonSyntaxException {
         return gson.fromJson(json, clazz);
-    }
-
-    /**
-     * Проверяет, является ли строка валидным JSON
-     *
-     * @param json строка для проверки
-     * @return true если JSON валиден, false иначе
-     */
-    public static boolean isValidJson(String json) {
-        try {
-            gson.fromJson(json, Object.class);
-            return true;
-        } catch (JsonSyntaxException e) {
-            return false;
-        }
     }
 
     /**
