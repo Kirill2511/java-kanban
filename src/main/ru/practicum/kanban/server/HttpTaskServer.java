@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpServer;
 import main.ru.practicum.kanban.manager.Managers;
 import main.ru.practicum.kanban.manager.TaskManager;
+import main.ru.practicum.kanban.server.handlers.*;
 import main.ru.practicum.kanban.server.util.JsonUtils;
 
 import java.io.IOException;
