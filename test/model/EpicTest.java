@@ -14,7 +14,7 @@ public class EpicTest {
      * Проверяет, что конструктор создаёт эпик с пустым списком подзадач.
      */
     @Test
-    void constructor_shouldCreateEpicWithEmptySubtaskList() {
+    public void constructor_shouldCreateEpicWithEmptySubtaskList() {
         // given
         String name = "Тестовый эпик";
         String description = "Тестовое описание";
@@ -34,7 +34,7 @@ public class EpicTest {
      * список.
      */
     @Test
-    void getSubtaskIds_shouldReturnCopyOfList() {
+    public void getSubtaskIds_shouldReturnCopyOfList() {
         // given
         Epic epic = new Epic("Эпик", "Описание");
 
@@ -54,7 +54,7 @@ public class EpicTest {
      * Проверяет, что addSubtaskId корректно добавляет ID подзадачи в список.
      */
     @Test
-    void addSubtaskId_shouldAddIdToList() {
+    public void addSubtaskId_shouldAddIdToList() {
         // given
         Epic epic = new Epic("Эпик", "Описание");
 
@@ -73,7 +73,7 @@ public class EpicTest {
      * Проверяет, что removeSubtaskId корректно удаляет ID подзадачи из списка.
      */
     @Test
-    void removeSubtaskId_shouldRemoveIdFromList() {
+    public void removeSubtaskId_shouldRemoveIdFromList() {
         // given
         Epic epic = new Epic("Эпик", "Описание");
         epic.addSubtaskId(1);
@@ -96,7 +96,7 @@ public class EpicTest {
      * подзадач.
      */
     @Test
-    void removeSubtaskId_shouldHandleNonExistentId() {
+    public void removeSubtaskId_shouldHandleNonExistentId() {
         // given
         Epic epic = new Epic("Эпик", "Описание");
         epic.addSubtaskId(1);
@@ -115,7 +115,7 @@ public class EpicTest {
      * эпика.
      */
     @Test
-    void toString_shouldContainEpicSpecificFields() {
+    public void toString_shouldContainEpicSpecificFields() {
         // given
         Epic epic = new Epic("Тестовый эпик", "Тестовое описание");
         epic.setId(5);

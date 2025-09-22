@@ -1,6 +1,5 @@
 package server;
 
-import com.google.gson.Gson;
 import main.ru.practicum.kanban.manager.InMemoryTaskManager;
 import main.ru.practicum.kanban.manager.TaskManager;
 import main.ru.practicum.kanban.model.Task;
@@ -22,12 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class HttpTaskManagerHistoryAndPriorityTest {
 
-    TaskManager manager = new InMemoryTaskManager();
-    HttpTaskServer taskServer = new HttpTaskServer(manager);
-    Gson gson = HttpTaskServer.getGson();
-
-    public HttpTaskManagerHistoryAndPriorityTest() throws IOException {
-    }
+    private final TaskManager manager = new InMemoryTaskManager();
+    private final HttpTaskServer taskServer = new HttpTaskServer(manager);
 
     @BeforeEach
     public void setUp() throws IOException {
@@ -100,7 +95,7 @@ public class HttpTaskManagerHistoryAndPriorityTest {
 
         // используем фиксированное базовое время для избежания пересечений
         LocalDateTime baseTime = LocalDateTime.of(2024, 1, 15, 10, 0);
-        
+
         // задача 2 начинается раньше задачи 1, без пересечений
         task1.setStartTime(baseTime.plusHours(2)); // 12:00-13:00
         task1.setDuration(Duration.ofHours(1));

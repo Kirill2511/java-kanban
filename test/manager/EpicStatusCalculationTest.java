@@ -18,12 +18,12 @@ public class EpicStatusCalculationTest {
     private TaskManager manager;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         manager = new InMemoryTaskManager();
     }
 
     @Test
-    void testEpicStatusWithEmptySubtaskList() {
+    public void testEpicStatusWithEmptySubtaskList() {
         int epicId = manager.createEpic("Epic", "Description");
 
         Optional<Epic> epicOpt = manager.getEpic(epicId);
@@ -35,7 +35,7 @@ public class EpicStatusCalculationTest {
     }
 
     @Test
-    void testEpicStatusWithAllNewSubtasks() {
+    public void testEpicStatusWithAllNewSubtasks() {
         int epicId = manager.createEpic("Epic", "Description");
 
         manager.createSubtask("Subtask1", "Description1", epicId);
@@ -51,7 +51,7 @@ public class EpicStatusCalculationTest {
     }
 
     @Test
-    void testEpicStatusWithAllDoneSubtasks() {
+    public void testEpicStatusWithAllDoneSubtasks() {
         int epicId = manager.createEpic("Epic", "Description");
 
         manager.createSubtask("Subtask1", "Description1", epicId);
@@ -74,7 +74,7 @@ public class EpicStatusCalculationTest {
     }
 
     @Test
-    void testEpicStatusWithNewAndDoneSubtasks() {
+    public void testEpicStatusWithNewAndDoneSubtasks() {
         int epicId = manager.createEpic("Epic", "Description");
 
         manager.createSubtask("Subtask1", "Description1", epicId);
@@ -100,7 +100,7 @@ public class EpicStatusCalculationTest {
     }
 
     @Test
-    void testEpicStatusWithInProgressSubtasks() {
+    public void testEpicStatusWithInProgressSubtasks() {
         int epicId = manager.createEpic("Epic", "Description");
 
         manager.createSubtask("Subtask1", "Description1", epicId);
@@ -122,7 +122,7 @@ public class EpicStatusCalculationTest {
     }
 
     @Test
-    void testEpicStatusWithMixedInProgressSubtasks() {
+    public void testEpicStatusWithMixedInProgressSubtasks() {
         int epicId = manager.createEpic("Epic", "Description");
 
         manager.createSubtask("Subtask1", "Description1", epicId);
@@ -150,7 +150,7 @@ public class EpicStatusCalculationTest {
     }
 
     @Test
-    void testEpicStatusAfterSubtaskDeletion() {
+    public void testEpicStatusAfterSubtaskDeletion() {
         int epicId = manager.createEpic("Epic", "Description");
 
         manager.createSubtask("Subtask1", "Description1", epicId);
@@ -176,7 +176,7 @@ public class EpicStatusCalculationTest {
     }
 
     @Test
-    void testEpicStatusAfterAllSubtasksDeletion() {
+    public void testEpicStatusAfterAllSubtasksDeletion() {
         int epicId = manager.createEpic("Epic", "Description");
 
         manager.createSubtask("Subtask1", "Description1", epicId);

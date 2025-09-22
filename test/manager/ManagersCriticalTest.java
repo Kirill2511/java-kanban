@@ -15,7 +15,7 @@ public class ManagersCriticalTest {
      * готовый к работе с задачами и историей.
      */
     @Test
-    void managers_shouldAlwaysReturnInitializedTaskManager() {
+    public void managers_shouldAlwaysReturnInitializedTaskManager() {
         // when
         TaskManager manager = Managers.getDefault();
 
@@ -37,7 +37,7 @@ public class ManagersCriticalTest {
      * готовый к работе с историей задач.
      */
     @Test
-    void managers_shouldAlwaysReturnInitializedHistoryManager() {
+    public void managers_shouldAlwaysReturnInitializedHistoryManager() {
         // when
         HistoryManager historyManager = Managers.getDefaultHistory();
 
@@ -65,7 +65,7 @@ public class ManagersCriticalTest {
      * возвращает рабочие экземпляры TaskManager и HistoryManager.
      */
     @Test
-    void managers_shouldReturnWorkingInstancesEveryTime() {
+    public void managers_shouldReturnWorkingInstancesEveryTime() {
         // when
         TaskManager manager1 = Managers.getDefault();
         TaskManager manager2 = Managers.getDefault();
@@ -100,7 +100,7 @@ public class ManagersCriticalTest {
      * просмотр задачи добавляет её в историю.
      */
     @Test
-    void managers_shouldReturnInstancesWithProperIntegration() {
+    public void managers_shouldReturnInstancesWithProperIntegration() {
         // given
         TaskManager manager = Managers.getDefault();
 
@@ -121,7 +121,7 @@ public class ManagersCriticalTest {
      * без дополнительной настройки.
      */
     @Test
-    void managers_shouldReturnFunctionalInstancesImmediately() {
+    public void managers_shouldReturnFunctionalInstancesImmediately() {
         // Проверяем, что экземпляры сразу готовы к работе без дополнительной настройки
 
         // when и then

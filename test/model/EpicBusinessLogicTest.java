@@ -12,7 +12,7 @@ public class EpicBusinessLogicTest {
      * Проверяет, что эпик не может быть добавлен как собственная подзадача.
      */
     @Test
-    void epic_shouldNotBeAddedAsItsOwnSubtask() {
+    public void epic_shouldNotBeAddedAsItsOwnSubtask() {
         // given
         Epic epic = new Epic("Эпик", "Описание эпика");
         epic.setId(1);
@@ -35,7 +35,7 @@ public class EpicBusinessLogicTest {
      * различаются.
      */
     @Test
-    void subtask_shouldNotBeItsOwnEpic() {
+    public void subtask_shouldNotBeItsOwnEpic() {
         // given
         Epic epic = new Epic("Эпик", "Описание эпика");
         epic.setId(1);
@@ -57,7 +57,7 @@ public class EpicBusinessLogicTest {
      * вызывает исключение.
      */
     @Test
-    void subtask_shouldNotHaveSameIdAsEpicId() {
+    public void subtask_shouldNotHaveSameIdAsEpicId() {
         // given
         int epicId = 5;
         Subtask subtask = new Subtask("Подзадача", "Описание", epicId);
@@ -74,7 +74,7 @@ public class EpicBusinessLogicTest {
      * подзадач.
      */
     @Test
-    void epic_shouldNotContainItselfAsSubtask_conceptualTest() {
+    public void epic_shouldNotContainItselfAsSubtask_conceptualTest() {
         // given
         Epic epic = new Epic("Эпик", "Описание эпика");
         epic.setId(1);

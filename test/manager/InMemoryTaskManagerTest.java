@@ -18,7 +18,7 @@ public class InMemoryTaskManagerTest {
     private TaskManager taskManager;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         taskManager = new InMemoryTaskManager();
     }
 
@@ -26,7 +26,7 @@ public class InMemoryTaskManagerTest {
      * Проверяет, что создаётся задача с уникальным ID и корректными полями.
      */
     @Test
-    void createTask_shouldCreateTaskWithUniqueId() {
+    public void createTask_shouldCreateTaskWithUniqueId() {
         // given
         String name = "Тестовая задача";
         String description = "Тестовое описание";
@@ -49,7 +49,7 @@ public class InMemoryTaskManagerTest {
      * Проверяет, что при пустом имени задачи выбрасывается исключение.
      */
     @Test
-    void createTask_shouldThrowExceptionForEmptyName() {
+    public void createTask_shouldThrowExceptionForEmptyName() {
         // when и then
         assertThrows(IllegalArgumentException.class, () -> taskManager.createTask("", "Description"));
     }
@@ -58,7 +58,7 @@ public class InMemoryTaskManagerTest {
      * Проверяет, что при null в имени задачи выбрасывается исключение.
      */
     @Test
-    void createTask_shouldThrowExceptionForNullName() {
+    public void createTask_shouldThrowExceptionForNullName() {
         // when и then
         assertThrows(IllegalArgumentException.class, () -> taskManager.createTask(null, "Description"));
     }
@@ -67,7 +67,7 @@ public class InMemoryTaskManagerTest {
      * Проверяет, что если задач нет, возвращается пустой список.
      */
     @Test
-    void getAllTasks_shouldReturnEmptyListWhenNoTasks() {
+    public void getAllTasks_shouldReturnEmptyListWhenNoTasks() {
         // when
         List<Task> tasks = taskManager.getAllTasks();
 
@@ -80,7 +80,7 @@ public class InMemoryTaskManagerTest {
      * Проверяет, что возвращаются все созданные задачи.
      */
     @Test
-    void getAllTasks_shouldReturnAllCreatedTasks() {
+    public void getAllTasks_shouldReturnAllCreatedTasks() {
         // given
         int task1Id = taskManager.createTask("Задача 1", "Описание 1");
         int task2Id = taskManager.createTask("Задача 2", "Описание 2");
@@ -98,7 +98,7 @@ public class InMemoryTaskManagerTest {
      * Проверяет, что для несуществующей задачи возвращается пустой Optional.
      */
     @Test
-    void getTask_shouldReturnEmptyForNonExistentTask() {
+    public void getTask_shouldReturnEmptyForNonExistentTask() {
         // when
         var taskOpt = taskManager.getTask(999);
 
@@ -110,7 +110,7 @@ public class InMemoryTaskManagerTest {
      * Проверяет, что обновление задачи меняет её статус.
      */
     @Test
-    void updateTask_shouldUpdateExistingTask() {
+    public void updateTask_shouldUpdateExistingTask() {
         // given
         int taskId = taskManager.createTask("Исходная задача", "Исходное описание");
         var taskOpt = taskManager.getTask(taskId);
@@ -132,7 +132,7 @@ public class InMemoryTaskManagerTest {
      * Проверяет, что при попытке обновить null-задачу выбрасывается исключение.
      */
     @Test
-    void updateTask_shouldThrowExceptionForNullTask() {
+    public void updateTask_shouldThrowExceptionForNullTask() {
         // when и then
         assertThrows(IllegalArgumentException.class, () -> taskManager.updateTask(null));
     }
@@ -141,7 +141,7 @@ public class InMemoryTaskManagerTest {
      * Проверяет, что задача удаляется корректно.
      */
     @Test
-    void deleteTask_shouldRemoveTask() {
+    public void deleteTask_shouldRemoveTask() {
         // given
         int taskId = taskManager.createTask("Задача для удаления", "Описание");
 
@@ -157,7 +157,7 @@ public class InMemoryTaskManagerTest {
      * Проверяет, что удаляются все задачи.
      */
     @Test
-    void deleteAllTasks_shouldRemoveAllTasks() {
+    public void deleteAllTasks_shouldRemoveAllTasks() {
         // given
         taskManager.createTask("Задача 1", "Описание 1");
         taskManager.createTask("Задача 2", "Описание 2");
@@ -173,7 +173,7 @@ public class InMemoryTaskManagerTest {
      * Проверяет, что создаётся эпик с уникальным ID и корректными полями.
      */
     @Test
-    void createEpic_shouldCreateEpicWithUniqueId() {
+    public void createEpic_shouldCreateEpicWithUniqueId() {
         // given
         String name = "Тестовый эпик";
         String description = "Описание тестового эпика";
@@ -197,7 +197,7 @@ public class InMemoryTaskManagerTest {
      * Проверяет, что создаётся подзадача, связанная с эпиком.
      */
     @Test
-    void createSubtask_shouldCreateSubtaskLinkedToEpic() {
+    public void createSubtask_shouldCreateSubtaskLinkedToEpic() {
         // given
         int epicId = taskManager.createEpic("Эпик", "Описание эпика");
 
@@ -222,7 +222,7 @@ public class InMemoryTaskManagerTest {
      * выбрасывается исключение.
      */
     @Test
-    void createSubtask_shouldThrowExceptionForNonExistentEpic() {
+    public void createSubtask_shouldThrowExceptionForNonExistentEpic() {
         // when и then
         assertThrows(IllegalArgumentException.class, () -> taskManager.createSubtask("Subtask", "Description", 999));
     }
@@ -231,7 +231,7 @@ public class InMemoryTaskManagerTest {
      * Проверяет, что удаление эпика удаляет и все его подзадачи.
      */
     @Test
-    void deleteEpic_shouldDeleteEpicAndAllSubtasks() {
+    public void deleteEpic_shouldDeleteEpicAndAllSubtasks() {
         // given
         int epicId = taskManager.createEpic("Эпик", "Описание эпика");
         taskManager.createSubtask("Подзадача 1", "Описание 1", epicId);
@@ -249,7 +249,7 @@ public class InMemoryTaskManagerTest {
      * Проверяет, что история изначально пуста.
      */
     @Test
-    void getHistory_shouldReturnEmptyListInitially() {
+    public void getHistory_shouldReturnEmptyListInitially() {
         // when
         List<Task> history = taskManager.getHistory();
 
@@ -262,7 +262,7 @@ public class InMemoryTaskManagerTest {
      * Проверяет, что история отслеживает просмотры задач и эпиков.
      */
     @Test
-    void getHistory_shouldTrackTaskViews() {
+    public void getHistory_shouldTrackTaskViews() {
         // given
         int taskId = taskManager.createTask("Задача", "Описание");
         int epicId = taskManager.createEpic("Эпик", "Описание эпика");
@@ -282,7 +282,7 @@ public class InMemoryTaskManagerTest {
      * Проверяет, что история корректно хранит множество уникальных задач.
      */
     @Test
-    void getHistory_shouldTrackMultipleUniqueTasks() {
+    public void getHistory_shouldTrackMultipleUniqueTasks() {
         // given
         int task1Id = taskManager.createTask("Задача 1", "Описание 1");
         int task2Id = taskManager.createTask("Задача 2", "Описание 2");

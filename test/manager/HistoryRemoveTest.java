@@ -23,7 +23,7 @@ public class HistoryRemoveTest {
     private TaskManager taskManager;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         historyManager = new InMemoryHistoryManager();
         taskManager = new InMemoryTaskManager();
     }
@@ -32,7 +32,7 @@ public class HistoryRemoveTest {
      * Проверяет прямое удаление задач из HistoryManager.
      */
     @Test
-    void testHistoryManagerRemove() {
+    public void testHistoryManagerRemove() {
         // given
         Task task1 = new Task("Задача 1", "Описание 1");
         task1.setId(1);
@@ -68,7 +68,7 @@ public class HistoryRemoveTest {
      * TaskManager
      */
     @Test
-    void testTaskDeletionRemovesFromHistory() {
+    public void testTaskDeletionRemovesFromHistory() {
         // given
         int taskId1 = taskManager.createTask("Задача 1", "Описание 1");
         int taskId2 = taskManager.createTask("Задача 2", "Описание 2");
@@ -106,7 +106,7 @@ public class HistoryRemoveTest {
      * Тестирует удаление эпика и автоматическое удаление его подзадач из истории
      */
     @Test
-    void testEpicDeletionRemovesSubtasksFromHistory() {
+    public void testEpicDeletionRemovesSubtasksFromHistory() {
         // given
         int epicId = taskManager.createEpic("Эпик 1", "Описание эпика");
         taskManager.createSubtask("Подзадача 1", "Описание 1", epicId);
@@ -146,7 +146,7 @@ public class HistoryRemoveTest {
      * Тестирует удаление несуществующего элемента из истории
      */
     @Test
-    void testRemoveNonExistentTask() {
+    public void testRemoveNonExistentTask() {
         // given
         Task task1 = new Task("Задача 1", "Описание 1");
         task1.setId(1);

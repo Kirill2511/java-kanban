@@ -15,7 +15,7 @@ public class InMemoryHistoryManagerTest {
     private HistoryManager historyManager;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         historyManager = new InMemoryHistoryManager();
     }
 
@@ -23,7 +23,7 @@ public class InMemoryHistoryManagerTest {
      * Проверяет, что история изначально пуста.
      */
     @Test
-    void getHistory_shouldReturnEmptyListInitially() {
+    public void getHistory_shouldReturnEmptyListInitially() {
         // when
         List<Task> history = historyManager.getHistory();
 
@@ -36,7 +36,7 @@ public class InMemoryHistoryManagerTest {
      * Проверяет, что задача добавляется в историю.
      */
     @Test
-    void add_shouldAddTaskToHistory() {
+    public void add_shouldAddTaskToHistory() {
         // given
         Task task = new Task("Тестовая задача", "Тестовое описание");
         task.setId(1);
@@ -54,7 +54,7 @@ public class InMemoryHistoryManagerTest {
      * Проверяет, что null-задача не добавляется в историю.
      */
     @Test
-    void add_shouldNotAddNullTask() {
+    public void add_shouldNotAddNullTask() {
         // when
         historyManager.add(null);
 
@@ -67,7 +67,7 @@ public class InMemoryHistoryManagerTest {
      * Проверяет, что порядок добавления задач в историю сохраняется.
      */
     @Test
-    void add_shouldMaintainOrderOfAddition() {
+    public void add_shouldMaintainOrderOfAddition() {
         // given
         Task task1 = new Task("Задача 1", "Описание 1");
         task1.setId(1);
@@ -94,7 +94,7 @@ public class InMemoryHistoryManagerTest {
      * В новой реализации нет лимита на количество элементов.
      */
     @Test
-    void add_shouldStoreAllUniqueTasks() {
+    public void add_shouldStoreAllUniqueTasks() {
         // given
         for (int i = 1; i <= 15; i++) {
             Task task = new Task("Задача " + i, "Описание " + i);
@@ -117,7 +117,7 @@ public class InMemoryHistoryManagerTest {
      * В новой реализации дубликаты по ID не допускаются.
      */
     @Test
-    void add_shouldReplaceDuplicateTasksById() {
+    public void add_shouldReplaceDuplicateTasksById() {
         // given
         Task task = new Task("Оригинальная задача", "Оригинальное описание");
         task.setId(1);
@@ -139,7 +139,7 @@ public class InMemoryHistoryManagerTest {
      * список.
      */
     @Test
-    void getHistory_shouldReturnCopyOfHistory() {
+    public void getHistory_shouldReturnCopyOfHistory() {
         // given
         Task task = new Task("Тестовая задача", "Тестовое описание");
         task.setId(1);
@@ -164,7 +164,7 @@ public class InMemoryHistoryManagerTest {
      * Проверяет функциональность удаления задач из истории.
      */
     @Test
-    void remove_shouldRemoveTaskFromHistory() {
+    public void remove_shouldRemoveTaskFromHistory() {
         // given
         Task task1 = new Task("Задача 1", "Описание 1");
         task1.setId(1);
@@ -193,7 +193,7 @@ public class InMemoryHistoryManagerTest {
      * дубликатов.
      */
     @Test
-    void add_shouldHandleComplexScenarios() {
+    public void add_shouldHandleComplexScenarios() {
         // given
         Task task1 = new Task("Задача 1", "Описание 1");
         task1.setId(1);

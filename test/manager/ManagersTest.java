@@ -12,7 +12,7 @@ public class ManagersTest {
      * InMemoryTaskManager.
      */
     @Test
-    void getDefault_shouldReturnInMemoryTaskManagerInstance() {
+    public void getDefault_shouldReturnInMemoryTaskManagerInstance() {
         // when
         TaskManager taskManager = Managers.getDefault();
 
@@ -26,7 +26,7 @@ public class ManagersTest {
      * вызове.
      */
     @Test
-    void getDefault_shouldReturnNewInstanceEachTime() {
+    public void getDefault_shouldReturnNewInstanceEachTime() {
         // when
         TaskManager taskManager1 = Managers.getDefault();
         TaskManager taskManager2 = Managers.getDefault();
@@ -40,7 +40,7 @@ public class ManagersTest {
      * InMemoryHistoryManager.
      */
     @Test
-    void getDefaultHistory_shouldReturnInMemoryHistoryManagerInstance() {
+    public void getDefaultHistory_shouldReturnInMemoryHistoryManagerInstance() {
         // when
         HistoryManager historyManager = Managers.getDefaultHistory();
 
@@ -54,7 +54,7 @@ public class ManagersTest {
      * каждом вызове.
      */
     @Test
-    void getDefaultHistory_shouldReturnNewInstanceEachTime() {
+    public void getDefaultHistory_shouldReturnNewInstanceEachTime() {
         // when
         HistoryManager historyManager1 = Managers.getDefaultHistory();
         HistoryManager historyManager2 = Managers.getDefaultHistory();

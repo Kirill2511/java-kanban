@@ -21,7 +21,7 @@ public class InMemoryTaskManagerExtendedTest {
     private TaskManager taskManager;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         taskManager = new InMemoryTaskManager();
     }
 
@@ -31,7 +31,7 @@ public class InMemoryTaskManagerExtendedTest {
      * Проверяет, что при удалении подзадачи её ID удаляется из эпика.
      */
     @Test
-    void deleteSubtask_shouldRemoveSubtaskIdFromEpic() {
+    public void deleteSubtask_shouldRemoveSubtaskIdFromEpic() {
         // given
         int epicId = taskManager.createEpic("Эпик", "Описание эпика");
         taskManager.createSubtask("Подзадача", "Описание подзадачи", epicId);
@@ -65,7 +65,7 @@ public class InMemoryTaskManagerExtendedTest {
      * Проверяет, что статус эпика пересчитывается при изменении статуса подзадач.
      */
     @Test
-    void updateSubtaskStatus_shouldRecalculateEpicStatus() {
+    public void updateSubtaskStatus_shouldRecalculateEpicStatus() {
         // given
         int epicId = taskManager.createEpic("Эпик", "Описание эпика");
         taskManager.createSubtask("Подзадача 1", "Описание 1", epicId);
@@ -113,7 +113,7 @@ public class InMemoryTaskManagerExtendedTest {
      * Проверяет проблему изменения ID задачи через сеттер.
      */
     @Test
-    void taskIdSetter_shouldNotBreakInternalMapping() {
+    public void taskIdSetter_shouldNotBreakInternalMapping() {
         // given
         int taskId = taskManager.createTask("Тестовая задача", "Описание");
 
@@ -141,7 +141,7 @@ public class InMemoryTaskManagerExtendedTest {
      * Проверяет изменение эпика через сеттеры после получения из менеджера.
      */
     @Test
-    void epicSetters_shouldNotAffectSubtaskList() {
+    public void epicSetters_shouldNotAffectSubtaskList() {
         // given
         int epicId = taskManager.createEpic("Эпик", "Описание эпика");
         taskManager.createSubtask("Подзадача", "Описание подзадачи", epicId);
@@ -171,7 +171,7 @@ public class InMemoryTaskManagerExtendedTest {
      * удалении задач.
      */
     @Test
-    void taskDeletion_shouldRemoveFromHistory() {
+    public void taskDeletion_shouldRemoveFromHistory() {
         // given
         int taskId = taskManager.createTask("Задача", "Описание");
         int epicId = taskManager.createEpic("Эпик", "Описание эпика");
@@ -209,7 +209,7 @@ public class InMemoryTaskManagerExtendedTest {
      * Проверяет работу менеджера с большим количеством задач.
      */
     @Test
-    void performance_shouldHandleManyTasks() {
+    public void performance_shouldHandleManyTasks() {
         // given
         final int TASK_COUNT = 1000;
 
@@ -231,7 +231,7 @@ public class InMemoryTaskManagerExtendedTest {
      * Проверяет корректность работы с эпиками, содержащими много подзадач.
      */
     @Test
-    void performance_shouldHandleEpicWithManySubtasks() {
+    public void performance_shouldHandleEpicWithManySubtasks() {
         // given
         int epicId = taskManager.createEpic("Большой эпик", "Эпик с множеством подзадач");
         final int SUBTASK_COUNT = 100;
@@ -261,7 +261,7 @@ public class InMemoryTaskManagerExtendedTest {
      * Проверяет корректность работы при удалении несуществующих задач.
      */
     @Test
-    void delete_shouldHandleNonExistentTasks() {
+    public void delete_shouldHandleNonExistentTasks() {
         // given - пустой менеджер
 
         // when - пытаемся удалить несуществующие задачи

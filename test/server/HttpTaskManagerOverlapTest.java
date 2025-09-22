@@ -22,12 +22,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class HttpTaskManagerOverlapTest {
 
-    TaskManager manager = new InMemoryTaskManager();
-    HttpTaskServer taskServer = new HttpTaskServer(manager);
-    Gson gson = HttpTaskServer.getGson();
-
-    public HttpTaskManagerOverlapTest() throws IOException {
-    }
+    private final TaskManager manager = new InMemoryTaskManager();
+    private final HttpTaskServer taskServer = new HttpTaskServer(manager);
+    private final Gson gson = HttpTaskServer.getGson();
 
     @BeforeEach
     public void setUp() throws IOException {

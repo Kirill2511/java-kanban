@@ -23,14 +23,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class HttpTaskManagerTasksTest {
 
-    // создаём экземпляр InMemoryTaskManager
-    TaskManager manager = new InMemoryTaskManager();
-    // передаём его в качестве аргумента в конструктор HttpTaskServer
-    HttpTaskServer taskServer = new HttpTaskServer(manager);
-    Gson gson = HttpTaskServer.getGson();
-
-    public HttpTaskManagerTasksTest() throws IOException {
-    }
+    private final TaskManager manager = new InMemoryTaskManager();
+    private final HttpTaskServer taskServer = new HttpTaskServer(manager);
+    private final Gson gson = HttpTaskServer.getGson();
 
     @BeforeEach
     public void setUp() throws IOException {

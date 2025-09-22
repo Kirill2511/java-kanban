@@ -12,7 +12,7 @@ public class SubtaskTest {
      * Проверяет, что конструктор подзадачи корректно инициализирует все поля.
      */
     @Test
-    void constructor_shouldCreateSubtaskWithCorrectFields() {
+    public void constructor_shouldCreateSubtaskWithCorrectFields() {
         // given
         String name = "Тестовая подзадача";
         String description = "Тестовое описание";
@@ -33,7 +33,7 @@ public class SubtaskTest {
      * значениями.
      */
     @Test
-    void constructorWithAllFields_shouldCreateSubtaskWithSpecifiedValues() {
+    public void constructorWithAllFields_shouldCreateSubtaskWithSpecifiedValues() {
         // given
         int id = 10;
         String name = "Тестовая подзадача";
@@ -56,7 +56,7 @@ public class SubtaskTest {
      * Проверяет, что getEpicId возвращает корректный ID эпика.
      */
     @Test
-    void getEpicId_shouldReturnEpicId() {
+    public void getEpicId_shouldReturnEpicId() {
         // given
         int epicId = 42;
         Subtask subtask = new Subtask("Подзадача", "Описание", epicId);
@@ -73,7 +73,7 @@ public class SubtaskTest {
      * подзадачи.
      */
     @Test
-    void toString_shouldContainSubtaskSpecificFields() {
+    public void toString_shouldContainSubtaskSpecificFields() {
         // given
         Subtask subtask = new Subtask("Тестовая подзадача", "Тестовое описание", 5);
         subtask.setId(10);
@@ -96,7 +96,7 @@ public class SubtaskTest {
      * Проверяет, что Subtask наследуется от Task.
      */
     @Test
-    void inheritance_shouldInheritFromTask() {
+    public void inheritance_shouldInheritFromTask() {
         // given
         Subtask subtask = new Subtask("Подзадача", "Описание", 1);
 

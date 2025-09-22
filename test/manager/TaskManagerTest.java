@@ -20,14 +20,14 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     protected T manager;
 
     @BeforeEach
-    void setUp() {
+    protected void setUp() {
         manager = createTaskManager();
     }
 
     protected abstract T createTaskManager();
 
     @Test
-    void testCreateTask() {
+    protected void testCreateTask() {
         int taskId = manager.createTask("Test Task", "Description");
         var taskOpt = manager.getTask(taskId);
 
@@ -39,21 +39,21 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void testCreateTaskWithEmptyName() {
+    protected void testCreateTaskWithEmptyName() {
         assertThrows(IllegalArgumentException.class, () -> {
             manager.createTask("", "Description");
         });
     }
 
     @Test
-    void testCreateTaskWithNullName() {
+    protected void testCreateTaskWithNullName() {
         assertThrows(IllegalArgumentException.class, () -> {
             manager.createTask(null, "Description");
         });
     }
 
     @Test
-    void testUpdateTask() {
+    protected void testUpdateTask() {
         int taskId = manager.createTask("Task", "Description");
         var taskOpt = manager.getTask(taskId);
         assertTrue(taskOpt.isPresent());
@@ -71,7 +71,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void testDeleteTask() {
+    protected void testDeleteTask() {
         int taskId = manager.createTask("Task", "Description");
         assertTrue(manager.getTask(taskId).isPresent());
 
@@ -80,7 +80,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void testCreateEpic() {
+    protected void testCreateEpic() {
         int epicId = manager.createEpic("Epic", "Epic Description");
         var epicOpt = manager.getEpic(epicId);
 
@@ -92,7 +92,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void testCreateSubtaskForEpic() {
+    protected void testCreateSubtaskForEpic() {
         int epicId = manager.createEpic("Epic", "Description");
         manager.createSubtask("Subtask", "Subtask Description", epicId);
 
@@ -107,7 +107,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void testGetEpicSubtasks() {
+    protected void testGetEpicSubtasks() {
         int epicId = manager.createEpic("Epic", "Description");
         manager.createSubtask("Subtask1", "Description1", epicId);
         manager.createSubtask("Subtask2", "Description2", epicId);
@@ -122,7 +122,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void testDeleteEpicRemovesSubtasks() {
+    protected void testDeleteEpicRemovesSubtasks() {
         int epicId = manager.createEpic("Epic", "Description");
         manager.createSubtask("Subtask1", "Description1", epicId);
         manager.createSubtask("Subtask2", "Description2", epicId);
@@ -136,7 +136,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void testGetAllTasks() {
+    protected void testGetAllTasks() {
         manager.createTask("Task1", "Description1");
         manager.createTask("Task2", "Description2");
 
@@ -145,7 +145,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void testGetAllEpics() {
+    protected void testGetAllEpics() {
         manager.createEpic("Epic1", "Description1");
         manager.createEpic("Epic2", "Description2");
 
@@ -154,7 +154,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void testGetAllSubtasks() {
+    protected void testGetAllSubtasks() {
         int epicId = manager.createEpic("Epic", "Description");
         manager.createSubtask("Subtask1", "Description1", epicId);
         manager.createSubtask("Subtask2", "Description2", epicId);
@@ -164,7 +164,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void testTaskPrioritization() {
+    protected void testTaskPrioritization() {
         // Создаем задачи с разным временем
         int task1Id = manager.createTask("Task1", "Description");
         int task2Id = manager.createTask("Task2", "Description");
@@ -199,7 +199,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void testOverlapDetection() {
+    protected void testOverlapDetection() {
         Task task1 = new Task(1, "Task1", "Description", TaskStatus.NEW,
                 Duration.ofHours(2), LocalDateTime.of(2024, 1, 15, 10, 0)); // 10:00-12:00
         Task task2 = new Task(2, "Task2", "Description", TaskStatus.NEW,
@@ -213,7 +213,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void testTaskTimeConflictValidation() {
+    protected void testTaskTimeConflictValidation() {
         // Создаем первую задачу с временем
         int taskId1 = manager.createTask("Task1", "Description");
         var task1Opt = manager.getTask(taskId1);
@@ -237,7 +237,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void testHistory() {
+    protected void testHistory() {
         int taskId1 = manager.createTask("Task1", "Description");
         int taskId2 = manager.createTask("Task2", "Description");
 
@@ -253,7 +253,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void testNonExistentTaskRetrieval() {
+    protected void testNonExistentTaskRetrieval() {
         assertTrue(manager.getTask(999).isEmpty());
         assertTrue(manager.getEpic(999).isEmpty());
         assertTrue(manager.getSubtask(999).isEmpty());
