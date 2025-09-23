@@ -1,4 +1,4 @@
-package main.ru.practicum.kanban.server.handlers;
+package main.ru.practicum.kanban.server.handler;
 
 import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;

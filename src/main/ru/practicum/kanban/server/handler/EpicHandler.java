@@ -1,4 +1,4 @@
-package main.ru.practicum.kanban.server.handlers;
+package main.ru.practicum.kanban.server.handler;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
