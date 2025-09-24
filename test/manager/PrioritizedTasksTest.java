@@ -1,11 +1,11 @@
 package manager;
 
 import main.ru.practicum.kanban.manager.FileBackedTaskManager;
-import main.ru.practicum.kanban.model.Task;
 import main.ru.practicum.kanban.model.Subtask;
+import main.ru.practicum.kanban.model.Task;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.AfterEach;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,7 +14,8 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PrioritizedTasksTest {
 
@@ -22,20 +23,20 @@ public class PrioritizedTasksTest {
     private File tempFile;
 
     @BeforeEach
-    void setUp() throws IOException {
+    public void setUp() throws IOException {
         tempFile = Files.createTempFile("priority-test", ".csv").toFile();
         manager = new FileBackedTaskManager(tempFile);
     }
 
     @AfterEach
-    void tearDown() {
+    public void tearDown() {
         if (tempFile != null && tempFile.exists()) {
             tempFile.delete();
         }
     }
 
     @Test
-    void getPrioritizedTasks_shouldReturnTasksSortedByStartTime() {
+    public void getPrioritizedTasks_shouldReturnTasksSortedByStartTime() {
         // given
         // Задача без времени начала (не должна попасть в приоритизированный список)
         int task1Id = manager.createTask("Задача без времени", "Описание 1");
@@ -46,7 +47,7 @@ public class PrioritizedTasksTest {
         assertTrue(task2Opt.isPresent());
         Task task2 = task2Opt.get();
         Task updatedTask2 = new Task(task2.getId(), task2.getName(), task2.getDescription(), task2.getStatus(),
-                                   Duration.ofHours(1), LocalDateTime.of(2024, 1, 15, 15, 0));
+                Duration.ofHours(1), LocalDateTime.of(2024, 1, 15, 15, 0));
         manager.updateTask(updatedTask2);
 
         // Задача с временем 10:00 (должна быть первой)
@@ -55,7 +56,7 @@ public class PrioritizedTasksTest {
         assertTrue(task3Opt.isPresent());
         Task task3 = task3Opt.get();
         Task updatedTask3 = new Task(task3.getId(), task3.getName(), task3.getDescription(), task3.getStatus(),
-                                   Duration.ofMinutes(30), LocalDateTime.of(2024, 1, 15, 10, 0));
+                Duration.ofMinutes(30), LocalDateTime.of(2024, 1, 15, 10, 0));
         manager.updateTask(updatedTask3);
 
         // when
@@ -63,14 +64,14 @@ public class PrioritizedTasksTest {
 
         // then
         assertEquals(2, prioritizedTasks.size(), "Должно быть 2 задачи с временем начала");
-        assertEquals("Задача на 10:00", prioritizedTasks.get(0).getName(), 
-                    "Первой должна быть задача на 10:00");
-        assertEquals("Задача на 15:00", prioritizedTasks.get(1).getName(), 
-                    "Второй должна быть задача на 15:00");
+        assertEquals("Задача на 10:00", prioritizedTasks.get(0).getName(),
+                "Первой должна быть задача на 10:00");
+        assertEquals("Задача на 15:00", prioritizedTasks.get(1).getName(),
+                "Второй должна быть задача на 15:00");
     }
 
     @Test
-    void getPrioritizedTasks_shouldIncludeSubtasksWithTime() {
+    public void getPrioritizedTasks_shouldIncludeSubtasksWithTime() {
         // given
         int epicId = manager.createEpic("Эпик", "Эпик с подзадачами");
         manager.createSubtask("Подзадача на 12:00", "Описание подзадачи", epicId);
@@ -79,9 +80,9 @@ public class PrioritizedTasksTest {
         List<Subtask> subtasks = manager.getAllSubtasks();
         assertEquals(1, subtasks.size());
         Subtask subtask = subtasks.get(0);
-        Subtask updatedSubtask = new Subtask(subtask.getId(), subtask.getName(), subtask.getDescription(), 
-                                           subtask.getStatus(), Duration.ofMinutes(45),
-                                           LocalDateTime.of(2024, 1, 15, 12, 0), subtask.getEpicId());
+        Subtask updatedSubtask = new Subtask(subtask.getId(), subtask.getName(), subtask.getDescription(),
+                subtask.getStatus(), Duration.ofMinutes(45),
+                LocalDateTime.of(2024, 1, 15, 12, 0), subtask.getEpicId());
         manager.updateSubtask(updatedSubtask);
 
         // when
@@ -94,7 +95,7 @@ public class PrioritizedTasksTest {
     }
 
     @Test
-    void getPrioritizedTasks_shouldMaintainOrderWithMultipleTasks() {
+    public void getPrioritizedTasks_shouldMaintainOrderWithMultipleTasks() {
         // given
         // Создаем задачи в неупорядоченном временном порядке
         int task1Id = manager.createTask("Задача на 15:00", "Описание");
@@ -102,7 +103,7 @@ public class PrioritizedTasksTest {
         assertTrue(task1Opt.isPresent());
         Task task1 = task1Opt.get();
         Task updatedTask1 = new Task(task1.getId(), task1.getName(), task1.getDescription(), task1.getStatus(),
-                                   Duration.ofHours(1), LocalDateTime.of(2024, 1, 15, 15, 0));
+                Duration.ofHours(1), LocalDateTime.of(2024, 1, 15, 15, 0));
         manager.updateTask(updatedTask1);
 
         int task2Id = manager.createTask("Задача на 10:00", "Описание");
@@ -110,16 +111,16 @@ public class PrioritizedTasksTest {
         assertTrue(task2Opt.isPresent());
         Task task2 = task2Opt.get();
         Task updatedTask2 = new Task(task2.getId(), task2.getName(), task2.getDescription(), task2.getStatus(),
-                                   Duration.ofMinutes(30), LocalDateTime.of(2024, 1, 15, 10, 0));
+                Duration.ofMinutes(30), LocalDateTime.of(2024, 1, 15, 10, 0));
         manager.updateTask(updatedTask2);
 
         int epicId = manager.createEpic("Эпик", "Описание");
         manager.createSubtask("Подзадача на 12:00", "Описание", epicId);
         List<Subtask> subtasks = manager.getAllSubtasks();
         Subtask subtask = subtasks.get(0);
-        Subtask updatedSubtask = new Subtask(subtask.getId(), subtask.getName(), subtask.getDescription(), 
-                                           subtask.getStatus(), Duration.ofMinutes(45),
-                                           LocalDateTime.of(2024, 1, 15, 12, 0), subtask.getEpicId());
+        Subtask updatedSubtask = new Subtask(subtask.getId(), subtask.getName(), subtask.getDescription(),
+                subtask.getStatus(), Duration.ofMinutes(45),
+                LocalDateTime.of(2024, 1, 15, 12, 0), subtask.getEpicId());
         manager.updateSubtask(updatedSubtask);
 
         // when
@@ -133,14 +134,14 @@ public class PrioritizedTasksTest {
     }
 
     @Test
-    void getPrioritizedTasks_shouldPersistAfterFileReload() throws IOException {
+    public void getPrioritizedTasks_shouldPersistAfterFileReload() {
         // given
         int task1Id = manager.createTask("Задача на 15:00", "Описание");
         var task1Opt = manager.getTask(task1Id);
         assertTrue(task1Opt.isPresent());
         Task task1 = task1Opt.get();
         Task updatedTask1 = new Task(task1.getId(), task1.getName(), task1.getDescription(), task1.getStatus(),
-                                   Duration.ofHours(1), LocalDateTime.of(2024, 1, 15, 15, 0));
+                Duration.ofHours(1), LocalDateTime.of(2024, 1, 15, 15, 0));
         manager.updateTask(updatedTask1);
 
         int task2Id = manager.createTask("Задача на 10:00", "Описание");
@@ -148,7 +149,7 @@ public class PrioritizedTasksTest {
         assertTrue(task2Opt.isPresent());
         Task task2 = task2Opt.get();
         Task updatedTask2 = new Task(task2.getId(), task2.getName(), task2.getDescription(), task2.getStatus(),
-                                   Duration.ofMinutes(30), LocalDateTime.of(2024, 1, 15, 10, 0));
+                Duration.ofMinutes(30), LocalDateTime.of(2024, 1, 15, 10, 0));
         manager.updateTask(updatedTask2);
 
         // when
@@ -162,7 +163,7 @@ public class PrioritizedTasksTest {
     }
 
     @Test
-    void getPrioritizedTasks_shouldExcludeTasksWithoutTime() {
+    public void getPrioritizedTasks_shouldExcludeTasksWithoutTime() {
         // given
         manager.createTask("Задача без времени 1", "Описание");
         manager.createTask("Задача без времени 2", "Описание");
@@ -172,7 +173,7 @@ public class PrioritizedTasksTest {
         assertTrue(taskOpt.isPresent());
         Task task = taskOpt.get();
         Task updatedTask = new Task(task.getId(), task.getName(), task.getDescription(), task.getStatus(),
-                                  Duration.ofHours(1), LocalDateTime.of(2024, 1, 15, 10, 0));
+                Duration.ofHours(1), LocalDateTime.of(2024, 1, 15, 10, 0));
         manager.updateTask(updatedTask);
 
         // when

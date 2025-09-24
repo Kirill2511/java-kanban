@@ -16,13 +16,13 @@ public class OptimizedTimeSlotManagerTest {
     private LocalDateTime baseTime;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         baseTime = LocalDateTime.of(2024, 1, 1, 0, 0, 0);
         timeSlotManager = new OptimizedTimeSlotManager(baseTime);
     }
 
     @Test
-    void hasTimeConflict_shouldReturnFalseForTaskWithoutTime() {
+    public void hasTimeConflict_shouldReturnFalseForTaskWithoutTime() {
         // given
         Task taskWithoutTime = new Task("Задача без времени", "Описание");
 
@@ -32,7 +32,7 @@ public class OptimizedTimeSlotManagerTest {
     }
 
     @Test
-    void hasTimeConflict_shouldReturnFalseForEmptyManager() {
+    public void hasTimeConflict_shouldReturnFalseForEmptyManager() {
         // given
         Task task = new Task("Задача", "Описание", Duration.ofHours(1), baseTime.plusHours(10));
 
@@ -42,7 +42,7 @@ public class OptimizedTimeSlotManagerTest {
     }
 
     @Test
-    void addTask_shouldOccupyTimeSlots() {
+    public void addTask_shouldOccupyTimeSlots() {
         // given
         Task task = new Task("Задача", "Описание", Duration.ofHours(1), baseTime.plusHours(10));
         task.setId(1);
@@ -58,7 +58,7 @@ public class OptimizedTimeSlotManagerTest {
     }
 
     @Test
-    void removeTask_shouldFreeTimeSlots() {
+    public void removeTask_shouldFreeTimeSlots() {
         // given
         Task task = new Task("Задача", "Описание", Duration.ofHours(1), baseTime.plusHours(10));
         task.setId(1);
@@ -78,7 +78,7 @@ public class OptimizedTimeSlotManagerTest {
     }
 
     @Test
-    void updateTask_shouldCorrectlyMoveTimeSlots() {
+    public void updateTask_shouldCorrectlyMoveTimeSlots() {
         // given
         Task oldTask = new Task("Старая задача", "Описание", Duration.ofHours(1), baseTime.plusHours(10));
         oldTask.setId(1);
@@ -103,7 +103,7 @@ public class OptimizedTimeSlotManagerTest {
     }
 
     @Test
-    void hasTimeConflict_shouldDetectOverlapWithMultipleTasks() {
+    public void hasTimeConflict_shouldDetectOverlapWithMultipleTasks() {
         // given
         Task task1 = new Task("Задача 1", "Описание", Duration.ofHours(1), baseTime.plusHours(10)); // 10:00-11:00
         task1.setId(1);
@@ -130,7 +130,7 @@ public class OptimizedTimeSlotManagerTest {
     }
 
     @Test
-    void hasTimeConflict_shouldHandleTasksWithDifferentDurations() {
+    public void hasTimeConflict_shouldHandleTasksWithDifferentDurations() {
         // given
         Task longTask = new Task("Длинная задача", "Описание", Duration.ofHours(4), baseTime.plusHours(10)); // 10:00-14:00
         longTask.setId(1);
@@ -157,7 +157,7 @@ public class OptimizedTimeSlotManagerTest {
     }
 
     @Test
-    void hasTimeConflict_shouldHandleBoundaryConditions() {
+    public void hasTimeConflict_shouldHandleBoundaryConditions() {
         // given
         Task task = new Task("Основная задача", "Описание", Duration.ofHours(1), baseTime.plusHours(10)); // 10:00-11:00
         task.setId(1);
@@ -182,7 +182,7 @@ public class OptimizedTimeSlotManagerTest {
     }
 
     @Test
-    void findNextFreeSlot_shouldFindAvailableSlot() {
+    public void findNextFreeSlot_shouldFindAvailableSlot() {
         // given
         Task task1 = new Task("Задача 1", "Описание", Duration.ofHours(1), baseTime.plusHours(10)); // 10:00-11:00
         task1.setId(1);
@@ -206,7 +206,7 @@ public class OptimizedTimeSlotManagerTest {
     }
 
     @Test
-    void findNextFreeSlot_shouldWorkWithHeavyLoad() {
+    public void findNextFreeSlot_shouldWorkWithHeavyLoad() {
         // given - заполняем календарь множеством задач
         for (int day = 0; day < 50; day++) {
             Task task = new Task("Задача " + day, "Описание", Duration.ofHours(20), baseTime.plusDays(day));
@@ -225,7 +225,7 @@ public class OptimizedTimeSlotManagerTest {
     }
 
     @Test
-    void getStatistics_shouldReturnValidStatistics() {
+    public void getStatistics_shouldReturnValidStatistics() {
         // given
         Task task1 = new Task("Задача 1", "Описание", Duration.ofHours(1), baseTime.plusHours(10));
         task1.setId(1);
@@ -247,7 +247,7 @@ public class OptimizedTimeSlotManagerTest {
     }
 
     @Test
-    void hasTimeConflict_shouldIgnoreTasksOutsideTimeRange() {
+    public void hasTimeConflict_shouldIgnoreTasksOutsideTimeRange() {
         // given
         Task taskOutsideRange = new Task("Вне диапазона", "Описание",
                 Duration.ofHours(1), baseTime.minusYears(1)); // Год назад
@@ -258,7 +258,7 @@ public class OptimizedTimeSlotManagerTest {
     }
 
     @Test
-    void performanceTest_operationsShouldBeConstantTime() {
+    public void performanceTest_operationsShouldBeConstantTime() {
         // given - добавляем много задач
         for (int i = 0; i < 1000; i++) {
             Task task = new Task("Задача " + i, "Описание", Duration.ofMinutes(30), baseTime.plusMinutes(i * 60));
@@ -282,7 +282,7 @@ public class OptimizedTimeSlotManagerTest {
     }
 
     @Test
-    void hasTimeConflict_shouldHandleVeryShortTasks() {
+    public void hasTimeConflict_shouldHandleVeryShortTasks() {
         // given
         Task task1 = new Task("Задача 1", "Описание", Duration.ofMinutes(1), baseTime.plusHours(10)); // 1 минута
         task1.setId(1);

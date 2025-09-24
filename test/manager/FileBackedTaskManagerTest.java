@@ -22,20 +22,20 @@ public class FileBackedTaskManagerTest {
     private FileBackedTaskManager manager;
 
     @BeforeEach
-    void setUp() throws IOException {
+    public void setUp() throws IOException {
         tempFile = Files.createTempFile("kanban_test", ".csv").toFile();
         manager = new FileBackedTaskManager(tempFile);
     }
 
     @AfterEach
-    void tearDown() {
+    public void tearDown() {
         if (tempFile.exists()) {
             tempFile.delete();
         }
     }
 
     @Test
-    void shouldSaveAndLoadEmptyFile() {
+    public void shouldSaveAndLoadEmptyFile() {
         FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(tempFile);
 
         assertTrue(loadedManager.getAllTasks().isEmpty());
@@ -45,7 +45,7 @@ public class FileBackedTaskManagerTest {
     }
 
     @Test
-    void shouldLoadFromNonExistentFile() {
+    public void shouldLoadFromNonExistentFile() {
         File nonExistentFile = new File("non_existent_file.csv");
         FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(nonExistentFile);
 
@@ -56,7 +56,7 @@ public class FileBackedTaskManagerTest {
     }
 
     @Test
-    void shouldSaveAndLoadTasksEpicsSubtasks() {
+    public void shouldSaveAndLoadTasksEpicsSubtasks() {
         // Создаем тестовые данные
         int taskId = manager.createTask("Задача 1", "Описание задачи 1");
         int epicId = manager.createEpic("Эпик 1", "Описание эпика 1");
@@ -90,7 +90,7 @@ public class FileBackedTaskManagerTest {
     }
 
     @Test
-    void shouldHandleSpecialCharactersInCsv() {
+    public void shouldHandleSpecialCharactersInCsv() {
         // Создаем задачу с специальными символами
         manager.createTask("Задача с \"кавычками\"", "Описание с запятой, и кавычками \"test\"");
 
@@ -104,7 +104,7 @@ public class FileBackedTaskManagerTest {
     }
 
     @Test
-    void shouldUpdateTasksAutomatically() {
+    public void shouldUpdateTasksAutomatically() {
         // Создаем задачу
         int taskId = manager.createTask("Задача", "Описание");
 
@@ -125,7 +125,7 @@ public class FileBackedTaskManagerTest {
     }
 
     @Test
-    void shouldDeleteTasksAndSave() {
+    public void shouldDeleteTasksAndSave() {
         // Создаем несколько задач
         int taskId1 = manager.createTask("Задача 1", "Описание 1");
         int taskId2 = manager.createTask("Задача 2", "Описание 2");
@@ -143,7 +143,7 @@ public class FileBackedTaskManagerTest {
     }
 
     @Test
-    void shouldSaveMultipleTasksWithDifferentStatuses() {
+    public void shouldSaveMultipleTasksWithDifferentStatuses() {
         // Создаем различные типы задач
         int taskId = manager.createTask("Тестовая задача", "Описание задачи");
         int epicId = manager.createEpic("Тестовый эпик", "Описание эпика");
@@ -177,7 +177,7 @@ public class FileBackedTaskManagerTest {
     }
 
     @Test
-    void shouldLoadMultipleTasksWithComplexData() throws IOException {
+    public void shouldLoadMultipleTasksWithComplexData() throws IOException {
         // Создаем сложную структуру данных
         int taskId = manager.createTask("Задача для загрузки", "Описание");
         int epicId = manager.createEpic("Эпик для загрузки", "Описание эпика");
@@ -244,7 +244,7 @@ public class FileBackedTaskManagerTest {
     }
 
     @Test
-    void shouldHandleFileOperationsCorrectly() {
+    public void shouldHandleFileOperationsCorrectly() {
         // Создаем задачу
         int taskId = manager.createTask("Задача для удаления", "Описание");
 
@@ -267,7 +267,7 @@ public class FileBackedTaskManagerTest {
     }
 
     @Test
-    void shouldPreserveTaskIdsAfterReload() {
+    public void shouldPreserveTaskIdsAfterReload() {
         // Создаем задачи с определенными ID
         int taskId1 = manager.createTask("Задача 1", "Описание 1");
         int taskId2 = manager.createTask("Задача 2", "Описание 2");
@@ -287,7 +287,7 @@ public class FileBackedTaskManagerTest {
     }
 
     @Test
-    void shouldHandleEmptyStringsInTaskData() {
+    public void shouldHandleEmptyStringsInTaskData() {
         // Создаем задачу с пустым описанием
         int taskId = manager.createTask("Задача с пустым описанием", "");
 

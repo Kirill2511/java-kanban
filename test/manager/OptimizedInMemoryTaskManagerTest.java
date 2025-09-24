@@ -20,13 +20,13 @@ public class OptimizedInMemoryTaskManagerTest {
     private LocalDateTime baseTime;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         baseTime = LocalDateTime.of(2024, 1, 1, 0, 0, 0);
         manager = new OptimizedInMemoryTaskManager(baseTime);
     }
 
     @Test
-    void createTask_shouldCreateTaskWithOptionalAPI() {
+    public void createTask_shouldCreateTaskWithOptionalAPI() {
         // given
         String name = "Тестовая задача";
         String description = "Описание";
@@ -45,7 +45,7 @@ public class OptimizedInMemoryTaskManagerTest {
     }
 
     @Test
-    void hasTimeConflict_shouldDetectConflictWithOptimizedAlgorithm() {
+    public void hasTimeConflict_shouldDetectConflictWithOptimizedAlgorithm() {
         // given - создаем задачу с временем
         int taskId1 = manager.createTask("Задача 1", "Описание");
         var task1Opt = manager.getTask(taskId1);
@@ -67,7 +67,7 @@ public class OptimizedInMemoryTaskManagerTest {
     }
 
     @Test
-    void hasTimeConflict_shouldNotDetectConflictForNonOverlappingTasks() {
+    public void hasTimeConflict_shouldNotDetectConflictForNonOverlappingTasks() {
         // given
         int taskId1 = manager.createTask("Задача 1", "Описание");
         var task1Opt = manager.getTask(taskId1);
@@ -89,7 +89,7 @@ public class OptimizedInMemoryTaskManagerTest {
     }
 
     @Test
-    void updateTask_shouldThrowExceptionForTimeConflict() {
+    public void updateTask_shouldThrowExceptionForTimeConflict() {
         // given
         int taskId1 = manager.createTask("Задача 1", "Описание");
         var task1Opt = manager.getTask(taskId1);
@@ -116,7 +116,7 @@ public class OptimizedInMemoryTaskManagerTest {
     }
 
     @Test
-    void updateSubtask_shouldThrowExceptionForTimeConflict() {
+    public void updateSubtask_shouldThrowExceptionForTimeConflict() {
         // given
         int epicId = manager.createEpic("Эпик", "Описание эпика");
         manager.createSubtask("Подзадача 1", "Описание 1", epicId);
@@ -143,7 +143,7 @@ public class OptimizedInMemoryTaskManagerTest {
     }
 
     @Test
-    void getPrioritizedTasks_shouldReturnTasksSortedByTime() {
+    public void getPrioritizedTasks_shouldReturnTasksSortedByTime() {
         // given
         int task1Id = manager.createTask("Задача на 15:00", "Описание");
         var task1Opt = manager.getTask(task1Id);
@@ -176,7 +176,7 @@ public class OptimizedInMemoryTaskManagerTest {
     }
 
     @Test
-    void hasTimeConflict_shouldReturnFalseForTasksWithoutTime() {
+    public void hasTimeConflict_shouldReturnFalseForTasksWithoutTime() {
         // given
         Task taskWithoutTime = new Task("Задача без времени", "Описание");
 
@@ -186,7 +186,7 @@ public class OptimizedInMemoryTaskManagerTest {
     }
 
     @Test
-    void isTasksOverlapping_shouldWorkCorrectlyForCompatibility() {
+    public void isTasksOverlapping_shouldWorkCorrectlyForCompatibility() {
         // given
         Task task1 = new Task("Задача 1", "Описание", Duration.ofHours(2),
                 baseTime.plusHours(10)); // 10:00-12:00
@@ -207,7 +207,7 @@ public class OptimizedInMemoryTaskManagerTest {
     }
 
     @Test
-    void deleteTask_shouldRemoveFromOptimizedStructures() {
+    public void deleteTask_shouldRemoveFromOptimizedStructures() {
         // given
         int taskId = manager.createTask("Задача для удаления", "Описание");
         var taskOpt = manager.getTask(taskId);
@@ -237,7 +237,7 @@ public class OptimizedInMemoryTaskManagerTest {
     }
 
     @Test
-    void findNextFreeSlot_shouldFindAvailableTimeSlot() {
+    public void findNextFreeSlot_shouldFindAvailableTimeSlot() {
         // given
         int taskId = manager.createTask("Занятая задача", "Описание");
         var taskOpt = manager.getTask(taskId);
@@ -256,13 +256,13 @@ public class OptimizedInMemoryTaskManagerTest {
         // then
         assertNotNull(freeSlot, "Должен найтись свободный слот");
         assertTrue(freeSlot.isBefore(baseTime.plusHours(10)) ||
-                freeSlot.isAfter(baseTime.plusHours(12)) ||
-                freeSlot.equals(baseTime.plusHours(12)),
+                        freeSlot.isAfter(baseTime.plusHours(12)) ||
+                        freeSlot.equals(baseTime.plusHours(12)),
                 "Свободный слот не должен пересекаться с занятым временем");
     }
 
     @Test
-    void getTimeSlotStatistics_shouldReturnStatistics() {
+    public void getTimeSlotStatistics_shouldReturnStatistics() {
         // given
         int taskId = manager.createTask("Задача со временем", "Описание");
         var taskOpt = manager.getTask(taskId);
@@ -284,7 +284,7 @@ public class OptimizedInMemoryTaskManagerTest {
     }
 
     @Test
-    void performanceTest_timeConflictCheckShouldBeFast() {
+    public void performanceTest_timeConflictCheckShouldBeFast() {
         // given - создаем много задач для нагрузочного теста
         for (int i = 0; i < 100; i++) {
             int taskId = manager.createTask("Задача " + i, "Описание");

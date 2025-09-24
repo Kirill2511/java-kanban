@@ -17,7 +17,7 @@ public class TaskManagerCriticalTest {
     private InMemoryTaskManager taskManager;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         taskManager = new InMemoryTaskManager();
     }
 
@@ -25,7 +25,7 @@ public class TaskManagerCriticalTest {
      * Проверяет, что задачи, эпики и подзадачи корректно находятся по их ID.
      */
     @Test
-    void taskManager_shouldFindTasksOfDifferentTypesByID() {
+    public void taskManager_shouldFindTasksOfDifferentTypesByID() {
         // given
         int taskId = taskManager.createTask("Задача", "Описание задачи");
         int epicId = taskManager.createEpic("Эпик", "Описание эпика");
@@ -61,7 +61,7 @@ public class TaskManagerCriticalTest {
      * и не создает конфликтов ID.
      */
     @Test
-    void taskManager_shouldUpdateExistingTaskCorrectly() {
+    public void taskManager_shouldUpdateExistingTaskCorrectly() {
         // given
         int taskId = taskManager.createTask("Оригинальная задача", "Оригинальное описание");
 
@@ -92,7 +92,7 @@ public class TaskManagerCriticalTest {
      * и изменения в одной копии не влияют на другие.
      */
     @Test
-    void taskManager_shouldReturnImmutableCopies() {
+    public void taskManager_shouldReturnImmutableCopies() {
         // given
         int taskId = taskManager.createTask("Оригинальная задача", "Оригинальное описание");
 
@@ -135,7 +135,7 @@ public class TaskManagerCriticalTest {
      * изменения не затрагивают сохранённую версию.
      */
     @Test
-    void taskManager_shouldMaintainTaskIntegrityWhenUpdating() {
+    public void taskManager_shouldMaintainTaskIntegrityWhenUpdating() {
         // given
         int taskId = taskManager.createTask("Оригинал", "Оригинальное описание");
         var originalTaskOpt = taskManager.getTask(taskId);
@@ -172,7 +172,7 @@ public class TaskManagerCriticalTest {
      * ссылается на свой эпик. Также проверяет предотвращение циклических ссылок.
      */
     @Test
-    void epicSubtask_shouldPreventCircularReferencesAndMaintainIntegrity() {
+    public void epicSubtask_shouldPreventCircularReferencesAndMaintainIntegrity() {
         // given
         int epicId = taskManager.createEpic("Эпик", "Описание эпика");
 
@@ -214,7 +214,7 @@ public class TaskManagerCriticalTest {
      * Проверяет поведение при обновлении несуществующих задач.
      */
     @Test
-    void taskManager_shouldHandleNonExistentTaskUpdates() {
+    public void taskManager_shouldHandleNonExistentTaskUpdates() {
         // given
         Task nonExistentTask = new Task("Несуществующая задача", "Описание");
         nonExistentTask.setId(999);
@@ -244,7 +244,7 @@ public class TaskManagerCriticalTest {
      * Проверяет целостность данных при удалении эпиков с подзадачами.
      */
     @Test
-    void taskManager_shouldMaintainDataIntegrityOnEpicDeletion() {
+    public void taskManager_shouldMaintainDataIntegrityOnEpicDeletion() {
         // given
         int epicId = taskManager.createEpic("Эпик", "Описание эпика");
         taskManager.createSubtask("Подзадача 1", "Описание 1", epicId);
@@ -277,7 +277,7 @@ public class TaskManagerCriticalTest {
      * при различных операциях.
      */
     @Test
-    void taskManager_shouldMaintainOverallDataConsistency() {
+    public void taskManager_shouldMaintainOverallDataConsistency() {
         // given
         int epicId = taskManager.createEpic("Эпик", "Описание эпика");
         taskManager.createSubtask("Подзадача 1", "Описание 1", epicId);

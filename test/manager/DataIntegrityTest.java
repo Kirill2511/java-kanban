@@ -21,7 +21,7 @@ public class DataIntegrityTest {
     private TaskManager taskManager;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         taskManager = new InMemoryTaskManager();
     }
 
@@ -30,7 +30,7 @@ public class DataIntegrityTest {
      * менеджера, если менеджер возвращает ссылки вместо копий.
      */
     @Test
-    void problem_taskModificationThroughSetters() {
+    public void problem_taskModificationThroughSetters() {
         // given
         int taskId = taskManager.createTask("Оригинальная задача", "Оригинальное описание");
 
@@ -64,7 +64,7 @@ public class DataIntegrityTest {
      * Демонстрирует защиту от изменения списка подзадач через геттер.
      */
     @Test
-    void protection_epicSubtaskListModification() {
+    public void protection_epicSubtaskListModification() {
         // given
         int epicId = taskManager.createEpic("Тестовый эпик", "Описание");
         taskManager.createSubtask("Подзадача 1", "Описание 1", epicId);
@@ -95,7 +95,7 @@ public class DataIntegrityTest {
      * данных.
      */
     @Test
-    void problem_taskIdModification() {
+    public void problem_taskIdModification() {
         // given
         int originalTaskId = taskManager.createTask("Тестовая задача", "Описание");
         var taskOpt = taskManager.getTask(originalTaskId);
@@ -125,7 +125,7 @@ public class DataIntegrityTest {
      * Проверяет корректность обновления статуса эпика при изменении подзадач.
      */
     @Test
-    void integrity_epicStatusConsistency() {
+    public void integrity_epicStatusConsistency() {
         // given
         int epicId = taskManager.createEpic("Эпик для проверки статуса", "Описание");
         taskManager.createSubtask("Подзадача 1", "Описание 1", epicId);
@@ -170,7 +170,7 @@ public class DataIntegrityTest {
      * Проверяет защиту от создания циклических ссылок.
      */
     @Test
-    void protection_preventCircularReferences() {
+    public void protection_preventCircularReferences() {
         // given
         int epicId = taskManager.createEpic("Эпик", "Описание");
         taskManager.createSubtask("Подзадача", "Описание", epicId);
@@ -187,7 +187,7 @@ public class DataIntegrityTest {
      * Тест производительности связного списка истории.
      */
     @Test
-    void performance_historyLinkedListOperations() {
+    public void performance_historyLinkedListOperations() {
         // given
         final int OPERATION_COUNT = 10000;
 
@@ -222,7 +222,7 @@ public class DataIntegrityTest {
      * Проверяет правильность работы истории при сложных сценариях.
      */
     @Test
-    void history_complexScenarioCorrectness() {
+    public void history_complexScenarioCorrectness() {
         // given
         int task1Id = taskManager.createTask("Задача 1", "Описание 1");
         int epicId = taskManager.createEpic("Эпик", "Описание эпика");

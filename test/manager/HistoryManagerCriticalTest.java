@@ -14,7 +14,7 @@ public class HistoryManagerCriticalTest {
     private HistoryManager historyManager;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         historyManager = new InMemoryHistoryManager();
     }
 
@@ -23,7 +23,7 @@ public class HistoryManagerCriticalTest {
      * исходного объекта.
      */
     @Test
-    void historyManager_shouldPreservePreviousVersionOfTask() {
+    public void historyManager_shouldPreservePreviousVersionOfTask() {
         // given
         Task task = new Task("Оригинальное имя", "Оригинальное описание");
         task.setId(1);
@@ -57,7 +57,7 @@ public class HistoryManagerCriticalTest {
      * добавления.
      */
     @Test
-    void historyManager_shouldNotBeAffectedByExternalTaskModifications() {
+    public void historyManager_shouldNotBeAffectedByExternalTaskModifications() {
         // даны задачи
         Task task1 = new Task("Задача 1", "Описание 1");
         task1.setId(1);
@@ -86,7 +86,7 @@ public class HistoryManagerCriticalTest {
      * функциональность.
      */
     @Test
-    void historyManager_shouldMaintainHistoryLimit() {
+    public void historyManager_shouldMaintainHistoryLimit() {
         // when - добавляем много уникальных задач
         for (int i = 1; i <= 15; i++) {
             Task task = new Task("Задача " + i, "Описание " + i);
@@ -108,7 +108,7 @@ public class HistoryManagerCriticalTest {
      * В новой реализации задачи с одинаковым ID заменяют друг друга.
      */
     @Test
-    void historyManager_shouldHandleIdenticalTasksCorrectly() {
+    public void historyManager_shouldHandleIdenticalTasksCorrectly() {
         // даны задачи с одинаковым ID но разными данными
         Task task1 = new Task("Первая версия", "Первое описание");
         task1.setId(1);
@@ -139,7 +139,7 @@ public class HistoryManagerCriticalTest {
      * Проверяет, что при повторном добавлении задача перемещается в конец истории.
      */
     @Test
-    void historyManager_shouldMoveTaskToEndOnReAdd() {
+    public void historyManager_shouldMoveTaskToEndOnReAdd() {
         // given
         Task task1 = new Task("Задача 1", "Описание 1");
         task1.setId(1);
